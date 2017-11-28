@@ -1,0 +1,31 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "console": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "curly": "error",
+    "eqeqeq": [
+      "error",
+      "smart"
+    ],
+    "global-require": "error",
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "semi": "error",
+    "space-before-blocks": "error"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "uxr",
+  "version": "0.1.0",
+  "description": "DOM utilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node -e 'require(\"./build\").build()'",
+    "minify": "node -e 'require(\"./build\").minify()'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcinarli/uxr.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "ES6",
+    "DOM",
+    "Utilities"
+  ],
+  "author": "Bilal Cinarli <bcinarli@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bcinarli/uxr/issues"
+  },
+  "homepage": "https://github.com/bcinarli/uxr#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.12.0",
+    "eslint-config-standard": "^10.2.1",
+    "google-closure-compiler-js": "^20170910.0.1",
+    "mocha": "^4.0.1"
+  }
+}
