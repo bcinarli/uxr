@@ -21,7 +21,15 @@ const karmaConfig = config =>
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
-        browsers: ['ChromeHeadless'],
+        browsers: ['ChromeHeadless', 'TravisChrome'],
+        customLaunchers: {
+            TravisChrome: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox', '--disable-translate',
+                    '--disable-extensions', '--no-first-run',
+                    '--disable-background-networking', '--remote-debugging-port=9223']
+            }
+        },
         autoWatch: false,
         concurrency: Infinity,
         singleRun: true

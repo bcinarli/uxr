@@ -4,8 +4,9 @@
   "description": "DOM utilities",
   "main": "index.js",
   "scripts": {
-    "ci": "npm run test",
+    "ci": "npm run test-ci",
     "test": "karma start karma.conf.js",
+    "test-ci": "karm start --browsers TravisChrome karma.conf.js",
     "build": "node -e 'require(\"./build\").build()'",
     "minify": "node -e 'require(\"./build\").minify()'",
     "report-coverage": "codecov"
