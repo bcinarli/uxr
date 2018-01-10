@@ -1,11 +1,22 @@
 sudo: false
+dist: trusty
 language: node_js
-
 node_js:
   - '9'
 
+addons:
+  chrome: stable
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+install:
+  - yarn
+
 script:
-  npm run ci
+  yarn run ci
 
 after_success:
   - cat ./coverage/coverage-final.json | node_modules/codecov.io/bin/codecov.io.js
