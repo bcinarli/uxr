@@ -4,10 +4,12 @@
     "sourceType": "module"
   },
   "env": {
-    "browser": true
+    "browser": true,
+    "node": true
   },
   "globals": {
-    "console": true
+    "console": true,
+    "_": true
   },
   "extends": "eslint:recommended",
   "rules": {

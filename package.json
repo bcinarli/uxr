@@ -4,9 +4,10 @@
   "description": "DOM utilities",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "karma start karma.conf.js",
     "build": "node -e 'require(\"./build\").build()'",
-    "minify": "node -e 'require(\"./build\").minify()'"
+    "minify": "node -e 'require(\"./build\").minify()'",
+    "report-coverage": "codecov"
   },
   "repository": {
     "type": "git",
@@ -26,9 +27,16 @@
   "homepage": "https://github.com/bcinarli/uxr#readme",
   "devDependencies": {
     "chai": "^4.1.2",
-    "eslint": "^4.12.0",
-    "eslint-config-standard": "^10.2.1",
-    "google-closure-compiler-js": "^20170910.0.1",
-    "mocha": "^4.0.1"
+    "codecov": "^3.0.0",
+    "eslint": "^4.15.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "google-closure-compiler-js": "^20180101.0.0",
+    "karma": "^2.0.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.1",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "mocha": "^4.1.0"
   }
 }
