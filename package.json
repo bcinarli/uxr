@@ -4,7 +4,7 @@
   "description": "DOM utilities",
   "main": "index.js",
   "scripts": {
-    "ci": "npm run test-ci",
+    "ci": "yarn run test-ci && yarn run report-coverage",
     "test": "karma start karma.conf.js",
     "test-ci": "karma start --browsers TravisChrome karma.conf.js",
     "build": "node -e 'require(\"./build\").build()'",
