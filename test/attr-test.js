@@ -9,6 +9,8 @@ describe('Attribute Methods', () => {
     let paragraphElem = uxr('#attr-paragraph');
     let anchorElem = uxr('#attr-anchor');
     let imgElem = uxr('#attr-img');
+    let inputElem = uxr('#attr-input');
+    let spanElem = uxr('#attr-span');
 
     describe('attr', () => {
         describe('Gets any attribute value of the selected element', () => {
@@ -40,6 +42,18 @@ describe('Attribute Methods', () => {
         });
     });
 
+    describe('html', () => {
+        it('should get the innerHTML of the selected element', () => {
+            expect(spanElem.html()).to.equal(controls.innerHTML);
+        });
+
+        it(`should set the innerHTML of the selected element to "${controls.newInnerHTML}`, () => {
+            spanElem.html(controls.newInnerHTML);
+
+            expect(spanElem.html()).to.equal(controls.newInnerHTML);
+        });
+    });
+
     describe('src', () => {
         it('should get the value of "src" attribute', () => {
             expect(imgElem.src()).to.equal(controls.src);
@@ -61,6 +75,18 @@ describe('Attribute Methods', () => {
             anchorElem.href(controls.newHref);
 
             expect(anchorElem.href()).to.equal(controls.newHref);
+        });
+    });
+
+    describe('value', () => {
+        it('should get the value of an input', () => {
+            expect(inputElem.value()).to.equal(controls.value);
+        });
+
+        it(`should set the value of an input element to "${controls.newValue}"`, () => {
+            inputElem.value(controls.newValue);
+
+            expect(inputElem.value()).to.equal(controls.newValue);
         });
     });
 });
