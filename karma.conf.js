@@ -18,8 +18,6 @@ const karmaConfig = config =>
                 {type: 'json', subdir: '.'}
             ]
         },
-        port: 9876,
-        colors: true,
         logLevel: config.LOG_INFO,
         browsers: ['ChromeHeadless', 'TravisChrome'],
         customLaunchers: {
@@ -30,9 +28,7 @@ const karmaConfig = config =>
                     '--disable-background-networking', '--remote-debugging-port=9223']
             }
         },
-        autoWatch: false,
-        concurrency: Infinity,
-        singleRun: true
+        autoWatch: false
     });
 
 module.exports = karmaConfig;

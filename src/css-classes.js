@@ -4,7 +4,7 @@
 
 const _class = function (stack, className, type) {
     stack.el.forEach(function (item) {
-        className.split(" ").filter(e => e !== "").map(className => item.classList[type](className));
+        className.split(' ').filter(e => e !== '').map(className => item.classList[type](className));
     });
 
     return stack;

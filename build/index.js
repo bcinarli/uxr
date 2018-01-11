@@ -4,6 +4,7 @@
 
 const gcc = require('google-closure-compiler-js');
 const {concat, getContent} = require('./concat');
+const {info, performance} = require('./logger');
 
 let flags = {
     jsCode: [],
@@ -12,11 +13,19 @@ let flags = {
 };
 
 const build = () => {
-    "use strict";
+    performance('Build');
+    info('Starting to build...');
+
     concat();
+
+    info('All source files concatenated and wrapped in IIFE!');
+    performance('Build');
 };
 
 const minify = () => {
+    performance('Minification');
+    info('Starting to minify...');
+
     const uxr = getContent('dist/uxr.js');
 
     flags.jsCode.push({
@@ -31,7 +40,8 @@ const minify = () => {
             throw err;
         }
 
-        console.info('UXR minified');
+        info('Minification Complete!');
+        performance('Minification');
     });
 };
 

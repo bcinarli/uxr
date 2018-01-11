@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const {info, performance} = require('./logger');
 const encoding = 'utf-8';
 
 // add the base.js as the first

@@ -11,26 +11,33 @@ let controls = {
     newSrc: 'https://uxrocket.io/dummy.jpg'
 };
 
+const createElement = (type, attributes) => {
+    let element = document.createElement(type);
+
+    Object.keys(attributes).forEach(key => {
+        element[key] = attributes[key];
+    });
+
+    return element;
+};
+
+const appendTo = (to, elements) => {
+    let list = Array.isArray(elements) ? elements : [elements];
+
+    list.forEach(element => to.appendChild(element));
+};
+
+const appendToBody = elements => appendTo(document.body, elements);
+
+// attribute setup
 (() => {
-    let div = document.createElement('div');
-    let paragraph = document.createElement('p');
-    let anchor = document.createElement('a');
-    let img = document.createElement('img');
+    let div = createElement('div', {id: 'attr'});
+    let paragraph = createElement('p', {id: 'attr-paragraph', innerText: controls.innerText});
+    let anchor = createElement('a', {id: 'attr-anchor', href: controls.href});
+    let img = createElement('img', {id: 'attr-img', src: controls.src});
 
-    div.id = 'attr';
-
-    paragraph.id = 'attr-paragraph';
-    paragraph.innerText = controls.innerText;
-
-    anchor.id = 'attr-anchor';
-    anchor.href = controls.href;
-
-    img.id = 'attr-img';
-    img.src = controls.src;
-
-    div.appendChild(paragraph);
-    div.appendChild(anchor);
-    div.appendChild(img);
-
-    document.body.appendChild(div);
+    appendTo(div, [paragraph, anchor, img]);
+    appendToBody(div);
 })();
+
+// manipulation setup

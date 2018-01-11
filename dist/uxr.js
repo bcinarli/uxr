@@ -96,7 +96,7 @@ _.extend.value = function (value) {
 
 const _class = function (stack, className, type) {
     stack.el.forEach(function (item) {
-        className.split(" ").filter(e => e !== "").map(className => item.classList[type](className));
+        className.split(' ').filter(e => e !== '').map(className => item.classList[type](className));
     });
 
     return stack;
@@ -264,10 +264,10 @@ _.ready = function (fn) {
  **/
 
 _.extend.wrap = function () {
-
+    return this;
 };
 
 _.extend.unwrap = function () {
-
+    return this;
 };
 })();

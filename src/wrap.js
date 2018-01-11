@@ -3,9 +3,9 @@
  **/
 
 _.extend.wrap = function () {
-
+    return this;
 };
 
 _.extend.unwrap = function () {
-
+    return this;
 };
