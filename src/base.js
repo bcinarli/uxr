@@ -39,7 +39,7 @@ _.extend = uxr.prototype = {
             };
         }
 
-        this.el = [].slice.call(this.el);
+        this.el = [...this.el];
 
         for (let i = 0; i < this.el.length; i++) {
             _this[i] = this.el[i];

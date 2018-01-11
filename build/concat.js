@@ -45,7 +45,7 @@ const getFileList = dir => fs.readdirSync(dir, encoding).map(file => path.join(d
 
 const getContent = (file, dir = '') => fs.readFileSync(path.join(dir, file), encoding);
 
-const wrapIIFE = string => ['(function(){', string, '})();'].join('\n');
+const wrapIIFE = string => ['(function() {', string, '})();'].join('\n');
 
 module.exports = {
     concat,
