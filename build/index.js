@@ -12,6 +12,10 @@ let flags = {
     compilationLevel: 'ADVANCED'
 };
 
+const release = () => {
+    concat({release: true});
+};
+
 const build = () => {
     performance('Build');
     info('Starting to build...');
@@ -46,6 +50,7 @@ const minify = () => {
 };
 
 module.exports = {
+    release,
     build,
     minify
 };

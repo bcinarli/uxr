@@ -5,7 +5,7 @@
 const karmaConfig = config =>
     config.set({
         frameworks: ['mocha', 'chai'],
-        files: ['dist/uxr.js', 'test/setup.js', 'test/**/*-test.js'],
+        files: ['dist/uxr.js', 'test/setup.js', 'test/base-test.js', 'test/**/*-test.js'],
         reporters: ['mocha', 'coverage'],
         preprocessors: {
             'src/**/*.js': ['coverage'],

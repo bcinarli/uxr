@@ -10,6 +10,7 @@
     "lint": "eslint src/**/*.js --fix",
     "build": "node -e 'require(\"./build\").build()'",
     "minify": "node -e 'require(\"./build\").minify()'",
+    "release": "node -e 'require(\"./build\").release()'",
     "report-coverage": "codecov",
     "watch:test": "karma start --browsers ChromeHeadless --autoWatch",
     "watch:build": "nodemon --watch src --exec 'yarn run lint && yarn run build'",

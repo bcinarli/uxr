@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const pkg = require('../package.json');
 const {info, performance} = require('./logger');
 const encoding = 'utf-8';
 
@@ -16,12 +17,17 @@ const concat = async (opts = {}) => {
     let name = opts.name || 'uxr.js';
     let files = opts.src || [sourcePath];
     let dist = opts.dist || distPath;
+    let release = opts.release || false;
 
     if (!files.includes(entry)) {
         files.unshift(entry);
     }
 
     const contents = getContents(files);
+
+    if (release) {
+        contents.push(`_.uxr = { version: '${pkg.version}' };`);
+    }
 
     fs.writeFileSync(path.join(dist, name), wrapIIFE(contents.join('\n')), encoding);
 };
