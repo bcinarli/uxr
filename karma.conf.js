@@ -14,6 +14,7 @@ const karmaConfig = config =>
         coverageReporter: {
             reporters: [
                 {type: 'text-summary'},
+                {type: 'html', subdir: '.'},
                 {type: 'lcovonly', subdir: '.'},
                 {type: 'json', subdir: '.'}
             ]

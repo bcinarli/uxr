@@ -31,14 +31,12 @@ _.extend = uxr.prototype = {
             this.el = [];
         }
 
-        if (typeof this.prevObj === 'undefined') {
-            this.prevObj = {
-                0: document,
-                el: [document],
-                length: 1,
-                selector: null
-            };
-        }
+        this.prevObj = this.prevObj || {
+            0: document,
+            el: [document],
+            length: 1,
+            selector: null
+        };
 
         this.el = [...this.el];
 
@@ -53,12 +51,10 @@ _.extend = uxr.prototype = {
 _.extend.init.prototype = _.extend;
 
 // generate hashes for internal usage
-_.hashCode = function (s) {
-    return s.split('').reduce(function (a, b) {
-        a = ((a << 5) - a) + b.charCodeAt(0);
-        return a & a;
-    }, 0);
-};
+_.hashCode = s => s.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+}, 0);
 /**
  * attr
  **/
