@@ -11,4 +11,13 @@ _.extend.filter = function (criteria) {
     return filtered;
 };
 
+_.extend.find = function (criteria) {
+    let _this = this;
+    let found = _(_this.el[0].querySelectorAll(criteria));
+
+    found.prevObj = this;
+
+    return found;
+};
+
 Element.prototype.matches = Element.prototype.matches ? Element.prototype.matches : Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
