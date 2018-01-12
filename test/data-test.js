@@ -4,9 +4,6 @@
 
 describe('Data Manager', () => {
     let dataElem = uxr('#data');
-    let dataElem2 = uxr('#data2');
-    delete dataElem2.el[0].dataset;
-    console.log(typeof dataElem2.el[0].dataset);
 
     it('should return the value of data-* attribute', () => {
         expect(dataElem.data(controls.dataAttr)).to.equal(controls.dataValue);
