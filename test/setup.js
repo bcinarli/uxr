@@ -73,9 +73,30 @@ const appendToBody = elements => appendTo(document.body, elements);
     appendToBody(div2);
 })();
 
+// end setup
+(() => {
+    let div = createElement('div', {id: 'end'});
+    let div2 = createElement('div', {id: 'end-inner'});
+
+
+    appendTo(div, div2);
+    appendToBody(div);
+})();
+
+// event test
+(() => {
+    let div = createElement('div', {id: 'event'});
+    let input = createElement('input', {id: 'event-input', type: 'text'});
+    let p = createElement('p', {id: 'event-paragraph', innerHTML: '<a href="#">test</a>>'});
+
+
+    appendTo(div, [input, p]);
+    appendToBody(div);
+})();
+
 // manipulation setup
 (() => {
-    let div = createElement('div', {id: 'manipulation'});
+    let div = createElement('div', {id: 'manipulation', innerHTML: '<p>Hello World</p>'});
 
     appendToBody(div);
 })();

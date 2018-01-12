@@ -31,13 +31,6 @@ _.extend = uxr.prototype = {
             this.el = [];
         }
 
-        this.prevObj = this.prevObj || {
-            0: document,
-            el: [document],
-            length: 1,
-            selector: null
-        };
-
         this.el = [...this.el];
 
         for (let i = 0; i < this.el.length; i++) {
@@ -172,15 +165,19 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
             if (typeof handler === 'undefined') {
                 Object.keys(item.uxrAttachedEvents[event]).forEach(function (fn) {
                     item.removeEventListener(event, item.uxrAttachedEvents[event][fn]);
+                    delete item.uxrAttachedEvents[event];
                 });
             }
 
             else {
                 let hash = _.internal.hashCode((handler).toString());
                 item.removeEventListener(event, item.uxrAttachedEvents[event][hash]);
+                delete item.uxrAttachedEvents[event][hash];
             }
         });
     });
+
+    return this;
 };
 
 _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
@@ -194,20 +191,17 @@ _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
     let hash = _.internal.hashCode((handler).toString());
 
     this.el.forEach(function (item) {
-        if (typeof item.uxrAttachedEvents === 'undefined') {
-            item.uxrAttachedEvents = {};
-        }
+        item.uxrAttachedEvents = item.uxrAttachedEvents || {};
 
         events.forEach(event => {
-            if (typeof item.uxrAttachedEvents[event] === 'undefined') {
-                item.uxrAttachedEvents[event] = {};
-            }
-
+            item.uxrAttachedEvents[event] = item.uxrAttachedEvents[event] || {};
             item.uxrAttachedEvents[event][hash] = handler;
 
             item.addEventListener(event, item.uxrAttachedEvents[event][hash]);
         });
     });
+
+    return this;
 };
 
 _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
@@ -218,9 +212,9 @@ _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
         handler = eventHandler;
     }
 
-    this.el.forEach(function (item) {
+    this.el.forEach(item => {
         events.forEach(event => {
-            let oneHandler = function (e) {
+            let oneHandler = e => {
                 e.preventDefault();
                 _(item).off(event, handler);
                 _(item).off(event, oneHandler);
@@ -230,6 +224,23 @@ _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
             _(item).on(event, oneHandler);
         });
     });
+
+    return this;
+};
+
+_.extend.trigger = function (eventName, selector) {
+    let stack = this.el;
+    let event = document.createEvent('HTMLEvents');
+
+    event.initEvent(eventName, true, true);
+
+    if (selector) {
+        stack = this.find(selector);
+    }
+
+    stack.forEach(item => item.dispatchEvent(event));
+
+    return this;
 };
 /**
  * filter
@@ -244,17 +255,30 @@ _.extend.filter = function (criteria) {
     return filtered;
 };
 
+_.extend.find = function (criteria) {
+    let _this = this;
+    let found = _(_this.el[0].querySelectorAll(criteria));
+
+    found.prevObj = this;
+
+    return found;
+};
+
 Element.prototype.matches = Element.prototype.matches ? Element.prototype.matches : Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 /**
  * manipulation
  **/
 
 _.extend.empty = function () {
-    return this.el.forEach(item => item.innerHTML = '');
+    this.el.forEach(item => item.innerHTML = '');
+
+    return this;
 };
 
 _.extend.remove = function () {
-    return this.el.forEach(item => item.parentNode.remove(item));
+    this.el.forEach(item => item.parentNode.removeChild(item));
+
+    return this;
 };
 /**
  * ready
