@@ -3,9 +3,13 @@
  **/
 
 _.extend.empty = function () {
-    return this.el.forEach(item => item.innerHTML = '');
+    this.el.forEach(item => item.innerHTML = '');
+
+    return this;
 };
 
 _.extend.remove = function () {
-    return this.el.forEach(item => item.parentNode.remove(item));
+    this.el.forEach(item => item.parentNode.removeChild(item));
+
+    return this;
 };
