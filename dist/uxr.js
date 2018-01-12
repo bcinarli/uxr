@@ -49,12 +49,19 @@ _.extend = uxr.prototype = {
 };
 
 _.extend.init.prototype = _.extend;
+_.internal = {};
 
 // generate hashes for internal usage
-_.hashCode = s => s.split('').reduce((a, b) => {
+_.internal.hashCode = s => s.split('').reduce((a, b) => {
     a = ((a << 5) - a) + b.charCodeAt(0);
     return a & a;
 }, 0);
+
+// trims the string and replaces to multiple spaces in the string with single space
+_.internal.justifyString = s => s.replace(/\s\s+/g, ' ').trim();
+
+// split selector
+_.internal.maybeMultiple = s => _.internal.justifyString(s).split(' ');
 /**
  * attr
  **/
@@ -92,7 +99,7 @@ _.extend.value = function (value) {
 
 const _class = function (stack, className, type) {
     stack.el.forEach(function (item) {
-        className.split(' ').filter(e => e !== '').map(className => item.classList[type](className));
+        _.internal.maybeMultiple(className).filter(e => e !== '').map(className => item.classList[type](className));
     });
 
     return stack;
@@ -111,8 +118,13 @@ _.extend.hasClass = function (className) {
 };
 
 _.extend.toggleClass = function (className) {
-    return this.el.forEach(item => item.nodeType === 1 && item.classList.contains(className) ? item.classList.remove(className) : item.classList.add(className)
-    );
+    return this.el.forEach(item => {
+        let classNames = _.internal.maybeMultiple(className);
+
+        if (item.nodeType === 1) {
+            classNames.forEach(_className => item.classList.toggle(_className));
+        }
+    });
 };
 
 /**
@@ -149,7 +161,7 @@ _.extend.end = function () {
 
 _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
     let handler = eventHandlerOrSelector;
-    let events = eventName.split(' ').map(event => event.trim());
+    let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
@@ -164,7 +176,7 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
             }
 
             else {
-                let hash = _.hashCode((handler).toString());
+                let hash = _.internal.hashCode((handler).toString());
                 item.removeEventListener(event, item.uxrAttachedEvents[event][hash]);
             }
         });
@@ -173,13 +185,13 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
 
 _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
     let handler = eventHandlerOrSelector;
-    let events = eventName.split(' ').map(event => event.trim());
+    let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
     }
 
-    let hash = _.hashCode((handler).toString());
+    let hash = _.internal.hashCode((handler).toString());
 
     this.el.forEach(function (item) {
         if (typeof item.uxrAttachedEvents === 'undefined') {
@@ -200,7 +212,7 @@ _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
 
 _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
     let handler = eventHandlerOrSelector;
-    let events = eventName.split(' ').map(event => event.trim());
+    let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
@@ -266,5 +278,4 @@ _.extend.wrap = function () {
 _.extend.unwrap = function () {
     return this;
 };
-_.uxr = { version: '0.1.0' };
 })();

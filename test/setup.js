@@ -12,7 +12,10 @@ let controls = {
     src: 'https://avatars1.githubusercontent.com/u/9591419',
     newSrc: 'https://uxrocket.io/dummy.jpg',
     value: 'Hello World!',
-    newValue: 'New input value'
+    newValue: 'New input value',
+    className: 'my-class',
+    newClassName: 'my-new-class',
+    missingClassName: 'my-missing-class'
 };
 
 const createElement = (type, attributes) => {
@@ -43,6 +46,14 @@ const appendToBody = elements => appendTo(document.body, elements);
     let span = createElement('span', {id: 'attr-span', innerHTML: controls.innerHTML});
 
     appendTo(div, [paragraph, anchor, img, input, span]);
+    appendToBody(div);
+})();
+
+// css-classes setup
+(() => {
+    let div = createElement('div', {id: 'css-classes'});
+    div.classList.add(controls.className);
+
     appendToBody(div);
 })();
 

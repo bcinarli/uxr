@@ -15,6 +15,6 @@ describe('Constructor', () => {
     });
 
     it('should return hash as "0"', () => {
-       uxr.hashCode('').should.equal(0);
+       uxr.internal.hashCode('').should.equal(0);
     });
 });
