@@ -14,6 +14,7 @@ let flags = {
 
 const release = () => {
     concat({release: true});
+    minify();
 };
 
 const build = () => {
