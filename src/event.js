@@ -4,7 +4,7 @@
 
 _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
     let handler = eventHandlerOrSelector;
-    let events = eventName.split(' ').map(event => event.trim());
+    let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
@@ -19,7 +19,7 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
             }
 
             else {
-                let hash = _.hashCode((handler).toString());
+                let hash = _.internal.hashCode((handler).toString());
                 item.removeEventListener(event, item.uxrAttachedEvents[event][hash]);
             }
         });
@@ -28,13 +28,13 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
 
 _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
     let handler = eventHandlerOrSelector;
-    let events = eventName.split(' ').map(event => event.trim());
+    let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
     }
 
-    let hash = _.hashCode((handler).toString());
+    let hash = _.internal.hashCode((handler).toString());
 
     this.el.forEach(function (item) {
         if (typeof item.uxrAttachedEvents === 'undefined') {
@@ -55,7 +55,7 @@ _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
 
 _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
     let handler = eventHandlerOrSelector;
-    let events = eventName.split(' ').map(event => event.trim());
+    let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;

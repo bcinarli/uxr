@@ -48,9 +48,16 @@ _.extend = uxr.prototype = {
 };
 
 _.extend.init.prototype = _.extend;
+_.internal = {};
 
 // generate hashes for internal usage
-_.hashCode = s => s.split('').reduce((a, b) => {
+_.internal.hashCode = s => s.split('').reduce((a, b) => {
     a = ((a << 5) - a) + b.charCodeAt(0);
     return a & a;
 }, 0);
+
+// trims the string and replaces to multiple spaces in the string with single space
+_.internal.justifyString = s => s.replace(/\s\s+/g, ' ').trim();
+
+// split selector
+_.internal.maybeMultiple = s => _.internal.justifyString(s).split(' ');

@@ -4,7 +4,7 @@
 
 const _class = function (stack, className, type) {
     stack.el.forEach(function (item) {
-        className.split(' ').filter(e => e !== '').map(className => item.classList[type](className));
+        _.internal.maybeMultiple(className).filter(e => e !== '').map(className => item.classList[type](className));
     });
 
     return stack;
@@ -23,6 +23,11 @@ _.extend.hasClass = function (className) {
 };
 
 _.extend.toggleClass = function (className) {
-    return this.el.forEach(item => item.nodeType === 1 && item.classList.contains(className) ? item.classList.remove(className) : item.classList.add(className)
-    );
+    return this.el.forEach(item => {
+        let classNames = _.internal.maybeMultiple(className);
+
+        if (item.nodeType === 1) {
+            classNames.forEach(_className => item.classList.toggle(_className));
+        }
+    });
 };
