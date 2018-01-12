@@ -30,13 +30,6 @@ _.extend = uxr.prototype = {
             this.el = [];
         }
 
-        this.prevObj = this.prevObj || {
-            0: document,
-            el: [document],
-            length: 1,
-            selector: null
-        };
-
         this.el = [...this.el];
 
         for (let i = 0; i < this.el.length; i++) {
