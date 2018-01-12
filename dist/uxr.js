@@ -266,4 +266,5 @@ _.extend.wrap = function () {
 _.extend.unwrap = function () {
     return this;
 };
+_.uxr = { version: '0.1.0' };
 })();
