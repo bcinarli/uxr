@@ -62,6 +62,9 @@ _.internal.justifyString = s => s.replace(/\s\s+/g, ' ').trim();
 
 // split selector
 _.internal.maybeMultiple = s => _.internal.justifyString(s).split(' ');
+
+// Dom String Format
+_.internal.toDomString = s => s.substr(0, 1).toLowerCase() + s.split('-').map(chunk => chunk.charAt(0).toUpperCase() + chunk.slice(1)).join('').substring(1);
 /**
  * attr
  **/
@@ -98,11 +101,7 @@ _.extend.value = function (value) {
  **/
 
 const _class = function (stack, className, type) {
-    stack.el.forEach(function (item) {
-        _.internal.maybeMultiple(className).filter(e => e !== '').map(className => item.classList[type](className));
-    });
-
-    return stack;
+    return stack.el[0].nodeType === 1 && stack.el.forEach(item => _.internal.maybeMultiple(className).map(className => item.classList[type](className)));
 };
 
 _.extend.addClass = function (className) {
@@ -114,7 +113,7 @@ _.extend.removeClass = function (className) {
 };
 
 _.extend.hasClass = function (className) {
-    return this.filter('.' + className).length > 0;
+    return this.el[0].nodeType === 1 && this.filter('.' + className).length > 0;
 };
 
 _.extend.toggleClass = function (className) {
@@ -133,14 +132,15 @@ _.extend.toggleClass = function (className) {
 
 _.extend.data = function (name, value) {
     let item = this.el[0];
+    let domName = _.internal.toDomString(name);
 
     if (typeof item.dataset !== 'undefined') {
-        if (value) {
-            item.dataset[name] = value;
+        if (typeof value !== 'undefined') {
+            item.dataset[domName] = value;
         }
 
         else {
-            return item.dataset[name];
+            return item.dataset[domName];
         }
     }
 

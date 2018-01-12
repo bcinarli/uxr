@@ -5,6 +5,7 @@
 describe('CSS Classes', () => {
     let cssElem = uxr('#css-classes');
     let cssElemNode = document.querySelector('#css-classes');
+    let noneElem = uxr([1,2,3]);
 
     describe('Add Class', () => {
         it('should add a new class to elements classList', () => {
@@ -35,6 +36,9 @@ describe('CSS Classes', () => {
             expect(cssElem.hasClass(controls.className)).to.be.false;
             cssElem.toggleClass(controls.className);
             expect(cssElem.hasClass(controls.className)).to.be.true;
+
+            noneElem.toggleClass(controls.className);
+            expect(noneElem.hasClass(controls.className)).to.be.false;
         });
     });
 });

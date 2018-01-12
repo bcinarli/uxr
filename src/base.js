@@ -61,3 +61,6 @@ _.internal.justifyString = s => s.replace(/\s\s+/g, ' ').trim();
 
 // split selector
 _.internal.maybeMultiple = s => _.internal.justifyString(s).split(' ');
+
+// Dom String Format
+_.internal.toDomString = s => s.substr(0, 1).toLowerCase() + s.split('-').map(chunk => chunk.charAt(0).toUpperCase() + chunk.slice(1)).join('').substring(1);

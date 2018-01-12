@@ -15,7 +15,11 @@ let controls = {
     newValue: 'New input value',
     className: 'my-class',
     newClassName: 'my-new-class',
-    missingClassName: 'my-missing-class'
+    missingClassName: 'my-missing-class',
+    dataAttr: 'uxr-demo',
+    dataValue: 'uxr-data',
+    newDataAttr: 'uxr-new',
+    newDataValue: 'uxr-defined-data'
 };
 
 const createElement = (type, attributes) => {
@@ -55,6 +59,18 @@ const appendToBody = elements => appendTo(document.body, elements);
     div.classList.add(controls.className);
 
     appendToBody(div);
+})();
+
+// data setup
+(() => {
+    let div = createElement('div', {id: 'data'});
+    div.setAttribute('data-' + controls.dataAttr, controls.dataValue);
+
+    let div2 = createElement('div', {id: 'data2'});
+    div2.setAttribute('data-' + controls.dataAttr, controls.dataValue);
+
+    appendToBody(div);
+    appendToBody(div2);
 })();
 
 // manipulation setup
