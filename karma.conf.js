@@ -5,11 +5,10 @@
 const karmaConfig = config =>
     config.set({
         frameworks: ['mocha', 'chai'],
-        files: ['dist/uxr.js', 'test/setup.js', 'test/base-test.js', 'test/**/*-test.js'],
+        files: ['src/base.js', 'src/**/*.js', 'test/setup.js', 'test/base-test.js', 'test/**/*-test.js'],
         reporters: ['mocha', 'coverage'],
         preprocessors: {
-            'src/**/*.js': ['coverage'],
-            'dist/uxr.js': ['coverage']
+            'src/**/*.js': ['coverage']
         },
         coverageReporter: {
             reporters: [

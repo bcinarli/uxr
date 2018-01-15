@@ -3,14 +3,14 @@
  **/
 
 describe('Attribute Methods', () => {
-    let attrElem = uxr('#attr');
+    let attrElem = _('#attr');
     let attrElemNode = document.querySelector('#attr');
 
-    let paragraphElem = uxr('#attr-paragraph');
-    let anchorElem = uxr('#attr-anchor');
-    let imgElem = uxr('#attr-img');
-    let inputElem = uxr('#attr-input');
-    let spanElem = uxr('#attr-span');
+    let paragraphElem = _('#attr-paragraph');
+    let anchorElem = _('#attr-anchor');
+    let imgElem = _('#attr-img');
+    let inputElem = _('#attr-input');
+    let spanElem = _('#attr-span');
 
     describe('attr', () => {
         describe('Gets any attribute value of the selected element', () => {

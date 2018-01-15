@@ -3,7 +3,7 @@
  **/
 
 describe('End', () => {
-    let endElem = uxr('#end');
+    let endElem = _('#end');
 
     it('should return the selection itself if selection is not filtered', () => {
         expect(endElem.end()).to.be.equal(endElem);

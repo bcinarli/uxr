@@ -3,8 +3,8 @@
  **/
 
 describe('Event Manager', () => {
-    let inputElem = uxr('#event-input');
-    let paragraphElem = uxr('#event-paragraph');
+    let inputElem = _('#event-input');
+    let paragraphElem = _('#event-paragraph');
 
     let value = '';
     let triggered = [];
@@ -114,7 +114,7 @@ describe('Event Manager', () => {
                 triggered.push(e.currentTarget.dataset.trigger);
             });
 
-            uxr('.event-link2').trigger('click');
+            _('.event-link2').trigger('click');
 
             paragraphElem.off('click', '.event-link2');
 

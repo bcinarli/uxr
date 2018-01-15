@@ -3,7 +3,7 @@
  **/
 
 describe('Manipulation Methods', () => {
-    let manipulationElem = uxr('#manipulation');
+    let manipulationElem = _('#manipulation');
 
     describe('Empty', () => {
         manipulationElem.empty();
@@ -14,6 +14,6 @@ describe('Manipulation Methods', () => {
     describe('Remove', () => {
         manipulationElem.remove();
 
-        expect(uxr('#manipulation').length).to.be.equal(0);
+        expect(_('#manipulation').length).to.be.equal(0);
     });
 });

@@ -3,8 +3,8 @@
  **/
 
 describe('Constructor', () => {
-    let objSelector = uxr([1, 2, 3]);
-    let emptySelector = uxr({});
+    let objSelector = _([1, 2, 3]);
+    let emptySelector = _({});
 
     it('should equal to selector if selector is an object', () => {
         expect(objSelector.el.toString()).to.equal(objSelector.selector.toString());
@@ -15,6 +15,6 @@ describe('Constructor', () => {
     });
 
     it('should return hash as "0"', () => {
-       uxr.internal.hashCode('').should.equal(0);
+       _.internal.hashCode('').should.equal(0);
     });
 });

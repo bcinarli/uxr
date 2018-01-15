@@ -3,9 +3,9 @@
  **/
 
 describe('CSS Classes', () => {
-    let cssElem = uxr('#css-classes');
+    let cssElem = _('#css-classes');
     let cssElemNode = document.querySelector('#css-classes');
-    let noneElem = uxr([1,2,3]);
+    let noneElem = _([1,2,3]);
 
     describe('Add Class', () => {
         it('should add a new class to elements classList', () => {

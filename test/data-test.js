@@ -3,7 +3,7 @@
  **/
 
 describe('Data Manager', () => {
-    let dataElem = uxr('#data');
+    let dataElem = _('#data');
 
     it('should return the value of data-* attribute', () => {
         expect(dataElem.data(controls.dataAttr)).to.equal(controls.dataValue);
