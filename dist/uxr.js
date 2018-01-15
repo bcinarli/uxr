@@ -153,17 +153,31 @@ _.extend.end = function () {
  **/
 
 _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
+    let stack = this;
     let handler = eventHandlerOrSelector;
     let events = _.internal.maybeMultiple(eventName);
 
-    if (typeof eventHandler !== 'undefined') {
+    if (typeof eventHandlerOrSelector === 'string') {
         handler = eventHandler;
+        stack = this.find(eventHandlerOrSelector);
     }
 
-    this.el.forEach(function (item) {
+    if (typeof eventHandler !== 'undefined') {
+        handler = eventHandler;
+        stack = this.find(eventHandlerOrSelector);
+    }
+
+    stack.el.forEach(item => {
+        item.uxrAttachedEvents = item.uxrAttachedEvents || {};
+
         events.forEach(event => {
-            if (typeof handler === 'undefined') {
-                Object.keys(item.uxrAttachedEvents[event]).forEach(function (fn) {
+            // make sure not to give an error, if user tried to remove unattached event
+            if (typeof item.uxrAttachedEvents[event] === 'undefined') {
+                return;
+            }
+
+            else if (typeof handler === 'undefined') {
+                Object.keys(item.uxrAttachedEvents[event]).forEach(fn => {
                     item.removeEventListener(event, item.uxrAttachedEvents[event][fn]);
                     delete item.uxrAttachedEvents[event];
                 });
@@ -181,16 +195,18 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
 };
 
 _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
+    let stack = this;
     let handler = eventHandlerOrSelector;
     let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
+        stack = this.find(eventHandlerOrSelector);
     }
 
     let hash = _.internal.hashCode((handler).toString());
 
-    this.el.forEach(function (item) {
+    stack.el.forEach(item => {
         item.uxrAttachedEvents = item.uxrAttachedEvents || {};
 
         events.forEach(event => {
@@ -205,14 +221,16 @@ _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
 };
 
 _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
+    let stack = this;
     let handler = eventHandlerOrSelector;
     let events = _.internal.maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
+        stack = this.find(eventHandlerOrSelector);
     }
 
-    this.el.forEach(item => {
+    stack.el.forEach(item => {
         events.forEach(event => {
             let oneHandler = e => {
                 e.preventDefault();
@@ -229,16 +247,16 @@ _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
 };
 
 _.extend.trigger = function (eventName, selector) {
-    let stack = this.el;
+    let stack = this;
     let event = document.createEvent('HTMLEvents');
 
     event.initEvent(eventName, true, true);
 
-    if (selector) {
+    if (typeof selector !== 'undefined') {
         stack = this.find(selector);
     }
 
-    stack.forEach(item => item.dispatchEvent(event));
+    stack.el.forEach(item => item.dispatchEvent(event));
 
     return this;
 };

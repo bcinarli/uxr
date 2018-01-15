@@ -8,6 +8,30 @@ describe('Event Manager', () => {
 
     let value = '';
     let triggered = [];
+    let handler = e => {
+        e.preventDefault();
+        triggered.push(e.currentTarget.dataset.trigger);
+    };
+
+    describe('Event Trigger', () => {
+        it('should trigger an event', () => {
+            let counter = 0;
+            paragraphElem.on('click', () => counter++);
+            paragraphElem.trigger('click');
+            paragraphElem.off('click');
+            expect(counter).to.be.equal(1);
+        });
+
+        it('should trigger an event on children elements', () => {
+            let counter = 0;
+            paragraphElem.on('click', '.event-link', () => counter++);
+            paragraphElem.trigger('click'); // no effect
+            paragraphElem.trigger('click', '.event-link');
+            paragraphElem.off('click', '.event-link');
+            paragraphElem.off('click');
+            expect(counter).to.be.equal(1);
+        });
+    });
 
     describe('Add Event', () => {
         it('should add an event', () => {
@@ -27,6 +51,14 @@ describe('Event Manager', () => {
 
             expect(triggered.includes('focus')).to.be.true;
             expect(triggered.includes('blur')).to.be.true;
+        });
+
+        it('should add an event to child element', () => {
+            paragraphElem.on('click', '.event-link', handler);
+
+            paragraphElem.find('.event-link').trigger('click');
+
+            expect(triggered.includes('child-element')).to.be.true;
         });
 
         it('should stores the attached events in `uxrAttachedEvents` on item', () => {
@@ -68,6 +100,27 @@ describe('Event Manager', () => {
             expect(inputElem[0].uxrAttachedEvents['focus']).to.be.undefined;
             expect(inputElem[0].uxrAttachedEvents['blur']).to.be.undefined;
         });
+
+        it('should remove the attached event with a handler from child element', () => {
+            // if you send handler, it only removes the handler but event type stays in element object
+            paragraphElem.off('click', '.event-link', handler);
+
+            expect(paragraphElem.find('.event-link')[0].uxrAttachedEvents['click']).to.be.empty;
+        });
+
+        it('should remove the attached event with anonymous func from child element', () => {
+            paragraphElem.on('click', '.event-link2', e => {
+                e.preventDefault();
+                triggered.push(e.currentTarget.dataset.trigger);
+            });
+
+            uxr('.event-link2').trigger('click');
+
+            paragraphElem.off('click', '.event-link2');
+
+            expect(triggered.includes('child-element2')).to.be.true;
+            expect(paragraphElem.find('.event-link2')[0].uxrAttachedEvents['click']).to.be.undefined;
+        });
     });
 
     describe('Single Run Event', () => {
@@ -80,6 +133,23 @@ describe('Event Manager', () => {
             inputElem.trigger('focus');
 
             expect(value).to.not.be.equal(controls.newValue);
+        });
+
+        it('should runs the event one time and remove itself from a child element', () => {
+            let counter = 0;
+
+            paragraphElem.once('click', '.event-link2', e => {
+                e.preventDefault();
+                counter++;
+            });
+
+            // first trigger => counter = 1;
+            paragraphElem.find('.event-link2').trigger('click');
+
+            // second trigger => counter = 1 no changed
+            paragraphElem.find('.event-link2').trigger('click');
+
+            expect(counter).to.not.be.equal(1);
         });
     });
 });
