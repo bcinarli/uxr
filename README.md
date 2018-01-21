@@ -8,7 +8,7 @@ A minimal in mind library for DOM related routines and element selections. UXR w
 UXR has the philosophy of fewer code and low file size. Because of this, widely supported ES6 codes are not transpiled to ES5 versions and not trying to cover all JavaScript methods which are normally written without much effort. UXR provides easy to wrappers for normally complex once.
 
 ## How To Use
-After adding the `dist/uxr.min.js` you can select an element set from DOM and start to manipulate/modify the selection.
+After adding the `dist/uxr.min.js` to your page, you can select an element set from DOM and start to manipulate/modify the selection.
 
 ### Element Selection
 Every `uxr` methods starts with element selections. Basically selection uses `querySelectorAll` getting element from DOM or Arrays.
@@ -19,6 +19,21 @@ uxr(selector);
 
 // getting an array as selector
 uxr([0, 1, 2, 3])
+```
+
+### Chaining
+`uxr` methods supports chaining. So you can call `uxr` methods one after another.
+
+``` js
+uxr(selector)
+    .addClass('hello')
+    .find('a')
+    .on('click', e => { 
+        e.preventDefault();
+        console.log('Hello World!')
+    })
+    .end()
+    .attr('id', 'my-id');
 ```
 
 ### Attribute Manipulation
@@ -48,6 +63,29 @@ There are some, easy to use - easy to remember attribute methods
 * `uxr(selector).href(value)` : if you send the `value` it sets the `href` value of the anchor with the new one. Otherwise returns the `href` value. 
 * `uxr(selector).value(value)` : if you send the `value` it sets the value of form elements with the new one. Otherwise returns the value of the form element. 
 
+
+### Class Manipulation
+With `uxr` it is easier to add/remove or check classes. All for class manipulation methods supports multiple class names separated with space and setting class starting with dot (`.`) 
+
+``` js
+let el = uxr(selector);
+
+// add a new css class
+el.addClass('new-class');
+el.addClass('.new-class');
+
+// remove a css class
+el.removeClass('old-class');
+el.removeClass('.old-class');
+
+// toggles a class
+el.toggleClass('class-to-toggle');
+el.toggleClass('.class-to-toggle');
+
+// checks if has the class or not
+el.hasClass('class-to-check');
+el.hasClass('.class-to-check');
+```
 
 [npm]: https://img.shields.io/npm/v/uxr.svg
 [npm-url]: https://npmjs.com/package/uxr
