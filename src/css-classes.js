@@ -2,8 +2,10 @@
  * css-classes
  **/
 
+/* global normalizeClassName */
+
 const _class = function (stack, className, type) {
-    return stack.el[0].nodeType === 1 && stack.el.forEach(item => _.internal.maybeMultiple(className).map(className => item.classList[type](className)));
+    return stack.el[0].nodeType === 1 && stack.el.forEach(item => _.internal.maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
 };
 
 _.extend.addClass = function (className) {
@@ -23,7 +25,7 @@ _.extend.toggleClass = function (className) {
         let classNames = _.internal.maybeMultiple(className);
 
         if (item.nodeType === 1) {
-            classNames.forEach(_className => item.classList.toggle(_className));
+            classNames.forEach(className => item.classList.toggle(normalizeClassName(className)));
         }
     });
 };

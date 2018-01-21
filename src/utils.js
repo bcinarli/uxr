@@ -24,3 +24,6 @@ const createElementFromString = str => {
 
     return newElement;
 };
+
+// eslint-disable-next-line
+const normalizeClassName = className => className.charAt(0) === '.' ? className.substr(1) : className;
