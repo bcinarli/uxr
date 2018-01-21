@@ -87,7 +87,10 @@ const appendToBody = elements => appendTo(document.body, elements);
 (() => {
     let div = createElement('div', {id: 'event'});
     let input = createElement('input', {id: 'event-input', type: 'text'});
-    let p = createElement('p', {id: 'event-paragraph', innerHTML: '<a class="event-link" href="#" data-trigger="child-element">test</a><a class="event-link2" href="#" data-trigger="child-element2">test</a>'});
+    let p = createElement('p', {
+        id: 'event-paragraph',
+        innerHTML: '<a class="event-link" href="#" data-trigger="child-element">test</a><a class="event-link2" href="#" data-trigger="child-element2">test</a>'
+    });
 
 
     appendTo(div, [input, p]);
@@ -98,5 +101,21 @@ const appendToBody = elements => appendTo(document.body, elements);
 (() => {
     let div = createElement('div', {id: 'manipulation', innerHTML: '<p>Hello World</p>'});
 
+    appendToBody(div);
+})();
+
+// wrap setup
+(() => {
+    let div = createElement('div', {id: 'wrap'});
+    let single = createElement('div', {id: 'wrap-single'});
+    let singleWithAttr = createElement('div', {id: 'wrap-single-attr'});
+    let singleInner = createElement('div', {id: 'wrap-inner', innerHTML: '<div class="wrap-single-inner"></div>'});
+    let apple = createElement('li', {innerText: 'Apple'});
+    let banana = createElement('li', {innerText: 'Banana'});
+    let strawberry = createElement('li', {innerText: 'Strawberry'});
+
+    let singleWrapAll = createElement('div', {id: 'wrap-all', innerHTML: '<span>Hello</span>'});
+
+    appendTo(div, [single, singleWithAttr, singleInner, apple, banana, strawberry, singleWrapAll]);
     appendToBody(div);
 })();
