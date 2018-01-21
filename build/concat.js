@@ -19,8 +19,6 @@ const concat = async (opts = {}) => {
     let dist = opts.dist || distPath;
     let release = opts.release || false;
 
-    console.log(files);
-
     if (!files.includes(entry)) {
         files.unshift(entry);
     }

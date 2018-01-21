@@ -93,8 +93,10 @@ _.extend.value = function (value) {
  * css-classes
  **/
 
+/* global normalizeClassName */
+
 const _class = function (stack, className, type) {
-    return stack.el[0].nodeType === 1 && stack.el.forEach(item => _.internal.maybeMultiple(className).map(className => item.classList[type](className)));
+    return stack.el[0].nodeType === 1 && stack.el.forEach(item => _.internal.maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
 };
 
 _.extend.addClass = function (className) {
@@ -106,7 +108,7 @@ _.extend.removeClass = function (className) {
 };
 
 _.extend.hasClass = function (className) {
-    return this.el[0].nodeType === 1 && this.filter('.' + className).length > 0;
+    return this.el[0].nodeType === 1 && this.filter('.' + normalizeClassName(className)).length > 0;
 };
 
 _.extend.toggleClass = function (className) {
@@ -114,7 +116,7 @@ _.extend.toggleClass = function (className) {
         let classNames = _.internal.maybeMultiple(className);
 
         if (item.nodeType === 1) {
-            classNames.forEach(_className => item.classList.toggle(_className));
+            classNames.forEach(className => item.classList.toggle(normalizeClassName(className)));
         }
     });
 };
@@ -310,14 +312,102 @@ _.ready = function (fn) {
     }
 };
 /**
+ * utils
+ **/
+
+/* exported createElementFromString */
+
+// eslint-disable-next-line
+const createElementFromString = str => {
+    let elementString = str.toString();
+
+    const tagRegex = /([<])?([a-zA-Z]+)/;
+    const theTag = elementString.match(tagRegex);
+    const attrRegex = /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)["']?/g;
+    const mayHaveAttributes = elementString.match(attrRegex) || [];
+
+    const newElement = document.createElement(theTag[2]);
+
+    mayHaveAttributes.forEach(attr => {
+        let singleAttrRegex = /([a-zA-Z-]+)=(?:['"])(.*)(?:['"])/g;
+        let theAttr = singleAttrRegex.exec(attr);
+
+        newElement.setAttribute(theAttr[1], theAttr[2]);
+    });
+
+    return newElement;
+};
+
+// eslint-disable-next-line
+const normalizeClassName = className => className.charAt(0) === '.' ? className.substr(1) : className;
+/**
  * wrap
  **/
 
-_.extend.wrap = function () {
+/* global createElementFromString */
+
+_.extend.wrap = function (wrapper) {
+    let newWrap = createElementFromString(wrapper);
+
+    let parent = this.el[0].parentNode;
+    let siblings = this.el[0].nextSibling;
+
+    newWrap.appendChild(this.el[0]);
+
+    if (siblings) {
+        parent.insertBefore(newWrap, siblings);
+    }
+    else {
+        parent.appendChild(newWrap);
+    }
+
     return this;
 };
 
-_.extend.unwrap = function () {
+_.extend.wrapAll = function (wrapper) {
+    let firstSibling = true;
+    let newWrap = createElementFromString(wrapper);
+
+    this.el.forEach(item => {
+        if (firstSibling) {
+            let parent = item.parentNode;
+            let siblings = item.nextSibling;
+
+            newWrap.appendChild(item);
+
+            if (siblings) {
+                parent.insertBefore(newWrap, siblings);
+            }
+            else {
+                parent.appendChild(newWrap);
+            }
+
+            firstSibling = false;
+        }
+
+        else {
+            newWrap.appendChild(item);
+        }
+    });
+
     return this;
 };
+
+_.extend.unwrap = function (selector) {
+    let parent = this.el[0].parentNode;
+
+    // if the parent is not the desired one, skip unwrapping
+    if (selector && !parent.matches(selector.toString())) {
+        return this;
+    }
+
+    parent.parentNode.appendChild(this.el[0]);
+
+    if (parent.children.length === 0) {
+        parent.parentNode.removeChild(parent);
+    }
+
+    return this;
+};
+_.uxr = { version: '0.2.0' };
 })();
