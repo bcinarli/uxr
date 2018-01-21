@@ -10,6 +10,17 @@ UXR has the philosophy of fewer code and low file size. Because of this, widely 
 ## How To Use
 After adding the `dist/uxr.min.js` to your page, you can select an element set from DOM and start to manipulate/modify the selection.
 
+### Loading UXR methods
+You can define UXR methods to run when page loads and content ready. Or run when needed.
+
+``` js
+uxr.ready(function(){
+    // inner functions automatically runs when loading finished
+    
+});
+
+```
+
 ### Element Selection
 Every `uxr` methods starts with element selections. Basically selection uses `querySelectorAll` getting element from DOM or Arrays.
 
@@ -86,6 +97,89 @@ el.toggleClass('.class-to-toggle');
 el.hasClass('class-to-check');
 el.hasClass('.class-to-check');
 ```
+
+### Data Attributes
+Data method gets or sets a data attribute. If `dataset` supported, gets or sets values via `dataset` otherwise, uses the `getAttribute` method to get value. Both supports _camelCase_ and _dashed_ attribute names.
+
+``` js
+let el = uxr(selector);
+
+// get data value
+el.data('uxr-demo');
+el.data('uxrDemo');
+
+// set data value
+el.data('uxr-demo', true);
+el.data('uxrDemo', true);
+```
+
+### Events
+DOM events can easily attached to elements. Named events and anonymous events supported while attaching the event. Also _triggering_ an event is possible. 
+
+#### Add Events
+
+``` js
+let myFunc = (e) => { console.log(e.currentTarget);}
+
+// attach an event
+uxr(selector).on('click', myFunc);
+
+// attach an event to child
+uxr(selector).on('click', '.clickable', myFunc);
+
+// attach multiple event
+uxr(selector).on('input focus', e => { console.log(e.currentTarget.value); }
+```
+
+#### Remove Events
+
+``` js
+// remove all click events
+uxr(selector).off('click');
+
+// remove only click event attached with myFunc
+uxr(selector).off('click', myFunc);
+
+// remove events attached with an anonymous function
+uxr(selector).off('input focus', e => { console.log(e.currentTarget.value); }
+```
+
+#### Single Run Events
+Single Run events are only run once then remove itself from the element.
+
+``` js
+// run once
+uxr(selector).once('touchend', e => { console.log('touch ended'); })
+```
+
+### Wrapper Methods
+With wrapper methods, you can wrap element or elements to a new parent or unwrap them.
+
+``` js
+let single = uxr('.single-element');
+let list = uxr('.list-element');
+
+// wrap element
+single.wrap('div');
+
+// wrap all elements in a single parent
+list.wrapAll('<ul />');
+
+// Unwrap the parent
+single.unwrap();
+```
+
+Unwrap removes the immediate parent. If a selector also defined for the unwrap as `el.unwrap(selector)`, it check if the immediate parent matches the selector.
+
+For wrapper definitions, you can define wrapper string without brackets, with brackets, with attributes etc. 
+All of the following strings are valid wrapper definitions
+
+* `div` _only name of the tag_
+* `<div>` _tag name with brackets_
+* `<div />`
+* `<div></div>`
+* `<div class="wrapper" />` _tag name with attributes_
+* `<div class='wrapper' id="container"></div>`
 
 [npm]: https://img.shields.io/npm/v/uxr.svg
 [npm-url]: https://npmjs.com/package/uxr
