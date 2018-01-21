@@ -17,7 +17,7 @@ _.extend.removeClass = function (className) {
 };
 
 _.extend.hasClass = function (className) {
-    return this.el[0].nodeType === 1 && this.filter('.' + className).length > 0;
+    return this.el[0].nodeType === 1 && this.filter('.' + normalizeClassName(className)).length > 0;
 };
 
 _.extend.toggleClass = function (className) {
