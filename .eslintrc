@@ -8,8 +8,8 @@
     "node": true
   },
   "globals": {
-    "console": true,
-    "_": true
+    "_": true,
+    "uxr": true
   },
   "extends": "eslint:recommended",
   "rules": {

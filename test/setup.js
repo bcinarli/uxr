@@ -100,8 +100,12 @@ const appendToBody = elements => appendTo(document.body, elements);
 // manipulation setup
 (() => {
     let div = createElement('div', {id: 'manipulation', innerHTML: '<p>Hello World</p>'});
+    let div2 = createElement('div', {id: 'manipulation-2', innerHTML: '<p>Hello World</p>'});
+    let div3 = createElement('div', {id: 'manipulation-3', innerHTML: '<p>Hello World</p>'});
 
     appendToBody(div);
+    appendToBody(div3);
+    appendToBody(div2);
 })();
 
 // wrap setup

@@ -7,6 +7,11 @@ A minimal in mind library for DOM related routines and element selections. UXR w
 
 UXR has the philosophy of fewer code and low file size. Because of this, widely supported ES6 codes are not transpiled to ES5 versions and not trying to cover all JavaScript methods which are normally written without much effort. UXR provides easy to wrappers for normally complex once.
 
+## Browser Support
+| Browser | [![chrome][chrome]] | [![firefox][firefox]] | [![opera][opera]] | [![safari][safari]] | [![edge][edge]] |
+| ------- | ------------------- | --------------------- | ----------------- | ------------------- | --------------- |
+| Version  | 49+  | 36+ | 37+ | 10+ | 12+ |
+
 ## How To Use
 After adding the `dist/uxr.min.js` to your page, you can select an element set from DOM and start to manipulate/modify the selection.
 
@@ -185,6 +190,29 @@ All of the following strings are valid wrapper definitions
 * `<div class="wrapper" />` _tag name with attributes_
 * `<div class='wrapper' id="container"></div>`
 
+### Element Insertions
+By using `before`, `after`, `prepend` and `append` you can control where to insert newly created elements.
+
+``` js
+let el = uxr('.container');
+
+// adds an element before selection
+el.before('<p>This will before "el"</p>');
+el.before(uxr('#new'));
+
+// adds an element after selection
+el.after('<p>This will before "el"</p>');
+el.after(uxr('#new'));
+
+// appends an element add the end of selection's content
+el.append('<p>This will before "el"</p>');
+el.append(uxr('#new'));
+
+// appends an element add the beginning of selection's content
+el.prepend('<p>This will before "el"</p>');
+el.prepend(uxr('#new'));
+```
+
 [npm]: https://img.shields.io/npm/v/uxr.svg
 [npm-url]: https://npmjs.com/package/uxr
 
@@ -193,3 +221,9 @@ All of the following strings are valid wrapper definitions
 
 [cover]: https://codecov.io/gh/bcinarli/uxr/branch/master/graph/badge.svg
 [cover-url]: https://codecov.io/gh/bcinarli/uxr
+
+[chrome]: http://uxrocket.io/browsers/chrome.png
+[firefox]: http://uxrocket.io/browsers/firefox.png
+[opera]: http://uxrocket.io/browsers/opera.png
+[safari]: http://uxrocket.io/browsers/safari.png
+[edge]: http://uxrocket.io/browsers/edge.png

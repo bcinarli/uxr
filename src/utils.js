@@ -46,3 +46,37 @@ const maybeMultiple = s => typeof s === 'string' ? justifyString(s).split(' ') :
 // Dom String Format
 // eslint-disable-next-line
 const toDomString = s => s.substr(0, 1).toLowerCase() + s.split('-').map(chunk => chunk.charAt(0).toUpperCase() + chunk.slice(1)).join('').substring(1);
+
+// Element from string
+// eslint-disable-next-line
+const elementFromString = s => {
+    if (typeof s === 'string') {
+        let template = document.createElement('template');
+        template.innerHTML = s.trim();
+
+        return template.content.firstChild;
+    }
+
+    return s;
+};
+
+// Insertable Element
+// eslint-disable-next-line
+const getInsertableElement = s => {
+    let insertableElement = elementFromString(s);
+
+    if (insertableElement instanceof uxr) {
+        insertableElement = insertableElement.el[0];
+    }
+
+    return insertableElement;
+};
+
+// InserBefore
+// eslint-disable-next-line
+const insertBefore = (insert, target, ref, parent) => {
+    let to = parent === true ? target.parentNode : target;
+    let where = ref === 'self' ? target : target[ref];
+
+    to.insertBefore(getInsertableElement(insert), where);
+};

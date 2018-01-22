@@ -3,13 +3,12 @@
  * uxr
  **/
 
-const _ = window.uxr = function (selector, context) {
-    return new uxr(selector, context);
+const _ = window.uxr = function (selector) {
+    return new uxr(selector);
 };
 
-const uxr = function (selector, context) {
+const uxr = function (selector) {
     this.selector = selector;
-    this.context = context;
     this.init();
 };
 
@@ -279,6 +278,9 @@ Element.prototype.matches = Element.prototype.matches ? Element.prototype.matche
  * manipulation
  **/
 
+/* global getInsertableElement */
+/* global insertBefore */
+
 _.extend.empty = function () {
     this.el.forEach(item => item.innerHTML = '');
 
@@ -287,6 +289,33 @@ _.extend.empty = function () {
 
 _.extend.remove = function () {
     this.el.forEach(item => item.parentNode.removeChild(item));
+
+    return this;
+};
+
+_.extend.append = function (stringOrObject) {
+    this.el.forEach(item => item.appendChild(getInsertableElement(stringOrObject)));
+
+    return this;
+};
+
+_.extend.prepend = function (stringOrObject) {
+    this.el.forEach(
+        item => insertBefore(stringOrObject, item, 'firstChild'));
+
+    return this;
+};
+
+_.extend.after = function (stringOrObject) {
+    this.el.forEach(
+        item => insertBefore(stringOrObject, item, 'nextSibling', true));
+
+    return this;
+};
+
+_.extend.before = function (stringOrObject) {
+    this.el.forEach(
+        item => insertBefore(stringOrObject, item, 'self', true));
 
     return this;
 };
@@ -349,6 +378,40 @@ const maybeMultiple = s => typeof s === 'string' ? justifyString(s).split(' ') :
 // Dom String Format
 // eslint-disable-next-line
 const toDomString = s => s.substr(0, 1).toLowerCase() + s.split('-').map(chunk => chunk.charAt(0).toUpperCase() + chunk.slice(1)).join('').substring(1);
+
+// Element from string
+// eslint-disable-next-line
+const elementFromString = s => {
+    if (typeof s === 'string') {
+        let template = document.createElement('template');
+        template.innerHTML = s.trim();
+
+        return template.content.firstChild;
+    }
+
+    return s;
+};
+
+// Insertable Element
+// eslint-disable-next-line
+const getInsertableElement = s => {
+    let insertableElement = elementFromString(s);
+
+    if (insertableElement instanceof uxr) {
+        insertableElement = insertableElement.el[0];
+    }
+
+    return insertableElement;
+};
+
+// InserBefore
+// eslint-disable-next-line
+const insertBefore = (insert, target, ref, parent) => {
+    let to = parent === true ? target.parentNode : target;
+    let where = ref === 'self' ? target : target[ref];
+
+    to.insertBefore(getInsertableElement(insert), where);
+};
 /**
  * wrap
  **/
