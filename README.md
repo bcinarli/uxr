@@ -85,6 +85,10 @@ let el = uxr(selector);
 el.addClass('new-class');
 el.addClass('.new-class');
 
+// add multiple classes at once
+el.addClass('.a set .of classes');
+el.addClass(['array', 'of', 'classes']);
+
 // remove a css class
 el.removeClass('old-class');
 el.removeClass('.old-class');

@@ -42,22 +42,6 @@ _.extend = uxr.prototype = {
 };
 
 _.extend.init.prototype = _.extend;
-_.internal = {};
-
-// generate hashes for internal usage
-_.internal.hashCode = s => s.split('').reduce((a, b) => {
-    a = ((a << 5) - a) + b.charCodeAt(0);
-    return a & a;
-}, 0);
-
-// trims the string and replaces to multiple spaces in the string with single space
-_.internal.justifyString = s => s.replace(/\s\s+/g, ' ').trim();
-
-// split selector
-_.internal.maybeMultiple = s => _.internal.justifyString(s).split(' ');
-
-// Dom String Format
-_.internal.toDomString = s => s.substr(0, 1).toLowerCase() + s.split('-').map(chunk => chunk.charAt(0).toUpperCase() + chunk.slice(1)).join('').substring(1);
 /**
  * attr
  **/
@@ -94,9 +78,10 @@ _.extend.value = function (value) {
  **/
 
 /* global normalizeClassName */
+/* global maybeMultiple */
 
 const _class = function (stack, className, type) {
-    return stack.el[0].nodeType === 1 && stack.el.forEach(item => _.internal.maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
+    return stack.el[0].nodeType === 1 && stack.el.forEach(item => maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
 };
 
 _.extend.addClass = function (className) {
@@ -113,7 +98,7 @@ _.extend.hasClass = function (className) {
 
 _.extend.toggleClass = function (className) {
     return this.el.forEach(item => {
-        let classNames = _.internal.maybeMultiple(className);
+        let classNames = maybeMultiple(className);
 
         if (item.nodeType === 1) {
             classNames.forEach(className => item.classList.toggle(normalizeClassName(className)));
@@ -125,9 +110,11 @@ _.extend.toggleClass = function (className) {
  * data
  **/
 
+/* global toDomString */
+
 _.extend.data = function (name, value) {
     let item = this.el[0];
-    let domName = _.internal.toDomString(name);
+    let domName = toDomString(name);
 
     if (typeof item.dataset !== 'undefined') {
         if (typeof value !== 'undefined') {
@@ -154,10 +141,13 @@ _.extend.end = function () {
  * event
  **/
 
+/* global hashCode */
+/* global maybeMultiple */
+
 _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
-    let events = _.internal.maybeMultiple(eventName);
+    let events = maybeMultiple(eventName);
 
     if (typeof eventHandlerOrSelector === 'string') {
         handler = eventHandler;
@@ -186,7 +176,7 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
             }
 
             else {
-                let hash = _.internal.hashCode((handler).toString());
+                let hash = hashCode((handler).toString());
                 item.removeEventListener(event, item.uxrAttachedEvents[event][hash]);
                 delete item.uxrAttachedEvents[event][hash];
             }
@@ -199,14 +189,14 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
 _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
-    let events = _.internal.maybeMultiple(eventName);
+    let events = maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
         stack = this.find(eventHandlerOrSelector);
     }
 
-    let hash = _.internal.hashCode((handler).toString());
+    let hash = hashCode((handler).toString());
 
     stack.el.forEach(item => {
         item.uxrAttachedEvents = item.uxrAttachedEvents || {};
@@ -225,7 +215,7 @@ _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
 _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
-    let events = _.internal.maybeMultiple(eventName);
+    let events = maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
@@ -340,6 +330,25 @@ const createElementFromString = str => {
 
 // eslint-disable-next-line
 const normalizeClassName = className => className.charAt(0) === '.' ? className.substr(1) : className;
+
+// generate hashes for internal usage
+// eslint-disable-next-line
+const hashCode = s => s.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+}, 0);
+
+// trims the string and replaces to multiple spaces in the string with single space
+// eslint-disable-next-line
+const justifyString = s => s.replace(/\s\s+/g, ' ').trim();
+
+// split selector
+// eslint-disable-next-line
+const maybeMultiple = s => typeof s === 'string' ? justifyString(s).split(' ') : s;
+
+// Dom String Format
+// eslint-disable-next-line
+const toDomString = s => s.substr(0, 1).toLowerCase() + s.split('-').map(chunk => chunk.charAt(0).toUpperCase() + chunk.slice(1)).join('').substring(1);
 /**
  * wrap
  **/
@@ -409,5 +418,4 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
-_.uxr = { version: '0.2.0' };
 })();

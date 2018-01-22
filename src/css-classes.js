@@ -3,9 +3,10 @@
  **/
 
 /* global normalizeClassName */
+/* global maybeMultiple */
 
 const _class = function (stack, className, type) {
-    return stack.el[0].nodeType === 1 && stack.el.forEach(item => _.internal.maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
+    return stack.el[0].nodeType === 1 && stack.el.forEach(item => maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
 };
 
 _.extend.addClass = function (className) {
@@ -22,7 +23,7 @@ _.extend.hasClass = function (className) {
 
 _.extend.toggleClass = function (className) {
     return this.el.forEach(item => {
-        let classNames = _.internal.maybeMultiple(className);
+        let classNames = maybeMultiple(className);
 
         if (item.nodeType === 1) {
             classNames.forEach(className => item.classList.toggle(normalizeClassName(className)));

@@ -2,9 +2,11 @@
  * data
  **/
 
+/* global toDomString */
+
 _.extend.data = function (name, value) {
     let item = this.el[0];
-    let domName = _.internal.toDomString(name);
+    let domName = toDomString(name);
 
     if (typeof item.dataset !== 'undefined') {
         if (typeof value !== 'undefined') {

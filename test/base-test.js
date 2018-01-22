@@ -15,6 +15,6 @@ describe('Constructor', () => {
     });
 
     it('should return hash as "0"', () => {
-       _.internal.hashCode('').should.equal(0);
+       hashCode('').should.equal(0);
     });
 });

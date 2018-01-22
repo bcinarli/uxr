@@ -2,10 +2,13 @@
  * event
  **/
 
+/* global hashCode */
+/* global maybeMultiple */
+
 _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
-    let events = _.internal.maybeMultiple(eventName);
+    let events = maybeMultiple(eventName);
 
     if (typeof eventHandlerOrSelector === 'string') {
         handler = eventHandler;
@@ -34,7 +37,7 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
             }
 
             else {
-                let hash = _.internal.hashCode((handler).toString());
+                let hash = hashCode((handler).toString());
                 item.removeEventListener(event, item.uxrAttachedEvents[event][hash]);
                 delete item.uxrAttachedEvents[event][hash];
             }
@@ -47,14 +50,14 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
 _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
-    let events = _.internal.maybeMultiple(eventName);
+    let events = maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;
         stack = this.find(eventHandlerOrSelector);
     }
 
-    let hash = _.internal.hashCode((handler).toString());
+    let hash = hashCode((handler).toString());
 
     stack.el.forEach(item => {
         item.uxrAttachedEvents = item.uxrAttachedEvents || {};
@@ -73,7 +76,7 @@ _.extend.on = function (eventName, eventHandlerOrSelector, eventHandler) {
 _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
-    let events = _.internal.maybeMultiple(eventName);
+    let events = maybeMultiple(eventName);
 
     if (typeof eventHandler !== 'undefined') {
         handler = eventHandler;

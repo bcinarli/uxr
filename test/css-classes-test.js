@@ -15,6 +15,16 @@ describe('CSS Classes', () => {
         });
     });
 
+    describe('Add Classes with an array', () => {
+       it('should add class from array list', () => {
+          cssElem.addClass(['array', 'of', 'classnames']);
+
+           expect(cssElemNode.classList.contains('array')).to.be.true;
+           expect(cssElemNode.classList.contains('of')).to.be.true;
+           expect(cssElemNode.classList.contains('classnames')).to.be.true;
+       });
+    });
+
     describe('Remove Class', () => {
         it('should remove a new class to elements classList', () => {
             cssElem.removeClass(controls.newClassName);
