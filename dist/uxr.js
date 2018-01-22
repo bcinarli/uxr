@@ -481,4 +481,5 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
+_.uxr = { version: '0.3.0' };
 })();
