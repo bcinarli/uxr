@@ -2,13 +2,12 @@
  * uxr
  **/
 
-const _ = window.uxr = function (selector, context) {
-    return new uxr(selector, context);
+const _ = window.uxr = function (selector) {
+    return new uxr(selector);
 };
 
-const uxr = function (selector, context) {
+const uxr = function (selector) {
     this.selector = selector;
-    this.context = context;
     this.init();
 };
 
