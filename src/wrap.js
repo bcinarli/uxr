@@ -2,10 +2,18 @@
  * wrap
  **/
 
-/* global createElementFromString */
+/* global elementFromString */
+
+const getWrapper = wrapperStr => {
+    let wrapperString = wrapperStr.toString();
+
+    return wrapperString.charAt(0) !== '<' ?
+        document.createElement(wrapperString) :
+        elementFromString(wrapperString);
+};
 
 _.extend.wrap = function (wrapper) {
-    let newWrap = createElementFromString(wrapper);
+    let newWrap = getWrapper(wrapper);
 
     let parent = this.el[0].parentNode;
     let siblings = this.el[0].nextSibling;
@@ -24,7 +32,7 @@ _.extend.wrap = function (wrapper) {
 
 _.extend.wrapAll = function (wrapper) {
     let firstSibling = true;
-    let newWrap = createElementFromString(wrapper);
+    let newWrap = getWrapper(wrapper);
 
     this.el.forEach(item => {
         if (firstSibling) {
