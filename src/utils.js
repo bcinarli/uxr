@@ -2,6 +2,8 @@
  * utils
  **/
 
+Element.prototype.matches = Element.prototype.matches ? Element.prototype.matches : Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+
 // eslint-disable-next-line
 const normalizeClassName = className => className.charAt(0) === '.' ? className.substr(1) : className;
 
@@ -56,4 +58,14 @@ const insertBefore = (insert, target, ref, parent) => {
     let where = ref === 'self' ? target : target[ref];
 
     to.insertBefore(getInsertableElement(insert), where);
+};
+
+// mutatedObj
+// eslint-disable-next-line
+const mutated = (orgObj, newSet) => {
+    let obj = _(newSet);
+
+    obj.prevObj = orgObj;
+
+    return obj;
 };

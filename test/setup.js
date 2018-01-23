@@ -108,6 +108,21 @@ const appendToBody = elements => appendTo(document.body, elements);
     appendToBody(div2);
 })();
 
+// traversing setup
+(() => {
+    let div = createElement('div', {id: 'traversing'});
+    let ul = createElement('ul', {id: 'traversing-list'});
+
+    ['apple', 'banana', 'strawberry'].forEach(fruit => {
+        let f = createElement('li', {innerText: fruit, classList: [fruit]});
+
+        appendTo(ul, f);
+    });
+
+    appendTo(div, ul);
+    appendToBody(div);
+})();
+
 // wrap setup
 (() => {
     let div = createElement('div', {id: 'wrap'});

@@ -2,22 +2,12 @@
  * filter
  **/
 
+/* global mutated */
+
 _.extend.filter = function (criteria) {
-    let _this = this;
-    let filtered = _(_this.el.filter(item => item.matches(criteria)));
-
-    filtered.prevObj = this;
-
-    return filtered;
+    return mutated(this, this.el.filter(item => item.matches(criteria)));
 };
 
 _.extend.find = function (criteria) {
-    let _this = this;
-    let found = _(_this.el[0].querySelectorAll(criteria));
-
-    found.prevObj = this;
-
-    return found;
+    return mutated(this, this.el[0].querySelectorAll(criteria));
 };
-
-Element.prototype.matches = Element.prototype.matches ? Element.prototype.matches : Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
