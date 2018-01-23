@@ -255,25 +255,15 @@ _.extend.trigger = function (eventName, selector) {
  * filter
  **/
 
+/* global mutated */
+
 _.extend.filter = function (criteria) {
-    let _this = this;
-    let filtered = _(_this.el.filter(item => item.matches(criteria)));
-
-    filtered.prevObj = this;
-
-    return filtered;
+    return mutated(this, this.el.filter(item => item.matches(criteria)));
 };
 
 _.extend.find = function (criteria) {
-    let _this = this;
-    let found = _(_this.el[0].querySelectorAll(criteria));
-
-    found.prevObj = this;
-
-    return found;
+    return mutated(this, this.el[0].querySelectorAll(criteria));
 };
-
-Element.prototype.matches = Element.prototype.matches ? Element.prototype.matches : Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 /**
  * manipulation
  **/
@@ -282,42 +272,36 @@ Element.prototype.matches = Element.prototype.matches ? Element.prototype.matche
 /* global insertBefore */
 
 _.extend.empty = function () {
-    this.el.forEach(item => item.innerHTML = '');
-
-    return this;
+    return this.el.forEach(item => item.innerHTML = '');
 };
 
 _.extend.remove = function () {
-    this.el.forEach(item => item.parentNode.removeChild(item));
-
-    return this;
+    return this.el.forEach(item => item.parentNode.removeChild(item));
 };
 
 _.extend.append = function (stringOrObject) {
-    this.el.forEach(item => item.appendChild(getInsertableElement(stringOrObject)));
-
-    return this;
+    return this.el.forEach(item => item.appendChild(getInsertableElement(stringOrObject)));
 };
 
 _.extend.prepend = function (stringOrObject) {
-    this.el.forEach(
+    return this.el.forEach(
         item => insertBefore(stringOrObject, item, 'firstChild'));
-
-    return this;
 };
 
 _.extend.after = function (stringOrObject) {
-    this.el.forEach(
+    return this.el.forEach(
         item => insertBefore(stringOrObject, item, 'nextSibling', true));
-
-    return this;
 };
 
 _.extend.before = function (stringOrObject) {
-    this.el.forEach(
+    return this.el.forEach(
         item => insertBefore(stringOrObject, item, 'self', true));
+};
 
-    return this;
+_.extend.replaceWith = function (stringOrObject) {
+    return this.el.map(
+        item => item.parentNode.replaceChild(getInsertableElement(stringOrObject), item)
+    );
 };
 /**
  * ready
@@ -331,31 +315,46 @@ _.ready = function (fn) {
     }
 };
 /**
+ * traversing
+ **/
+
+/* global mutated */
+
+_.extend.closest = function (selector) {
+    let el = this.el[0];
+
+    while (el !== null && el.nodeType === 1) {
+        if (el.matches(selector)) {
+            return el;
+        }
+
+        el = el.parentNode;
+    }
+
+    return null;
+};
+
+_.extend.next = function (selector) {
+    return mutated(this, this.el.map(item => item.nextElementSibling).filter(item => selector ? item.matches(selector) : item));
+};
+
+_.extend.prev = function (selector) {
+    return mutated(this, this.el.map(item => item.previousElementSibling).filter(item => selector ? item.matches(selector) : item));
+};
+
+_.extend.first = function () {
+    return mutated(this, this.el.filter((item, index) => index === 0));
+};
+
+_.extend.last = function () {
+    let last = this.length - 1;
+    return mutated(this, this.el.filter((item, index) => index === last));
+};
+/**
  * utils
  **/
 
-/* exported createElementFromString */
-
-// eslint-disable-next-line
-const createElementFromString = str => {
-    let elementString = str.toString();
-
-    const tagRegex = /([<])?([a-zA-Z]+)/;
-    const theTag = elementString.match(tagRegex);
-    const attrRegex = /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)["']?/g;
-    const mayHaveAttributes = elementString.match(attrRegex) || [];
-
-    const newElement = document.createElement(theTag[2]);
-
-    mayHaveAttributes.forEach(attr => {
-        let singleAttrRegex = /([a-zA-Z-]+)=(?:['"])(.*)(?:['"])/g;
-        let theAttr = singleAttrRegex.exec(attr);
-
-        newElement.setAttribute(theAttr[1], theAttr[2]);
-    });
-
-    return newElement;
-};
+Element.prototype.matches = Element.prototype.matches ? Element.prototype.matches : Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 
 // eslint-disable-next-line
 const normalizeClassName = className => className.charAt(0) === '.' ? className.substr(1) : className;
@@ -412,14 +411,32 @@ const insertBefore = (insert, target, ref, parent) => {
 
     to.insertBefore(getInsertableElement(insert), where);
 };
+
+// mutatedObj
+// eslint-disable-next-line
+const mutated = (orgObj, newSet) => {
+    let obj = _(newSet);
+
+    obj.prevObj = orgObj;
+
+    return obj;
+};
 /**
  * wrap
  **/
 
-/* global createElementFromString */
+/* global elementFromString */
+
+const getWrapper = wrapperStr => {
+    let wrapperString = wrapperStr.toString();
+
+    return wrapperString.charAt(0) !== '<' ?
+        document.createElement(wrapperString) :
+        elementFromString(wrapperString);
+};
 
 _.extend.wrap = function (wrapper) {
-    let newWrap = createElementFromString(wrapper);
+    let newWrap = getWrapper(wrapper);
 
     let parent = this.el[0].parentNode;
     let siblings = this.el[0].nextSibling;
@@ -438,7 +455,7 @@ _.extend.wrap = function (wrapper) {
 
 _.extend.wrapAll = function (wrapper) {
     let firstSibling = true;
-    let newWrap = createElementFromString(wrapper);
+    let newWrap = getWrapper(wrapper);
 
     this.el.forEach(item => {
         if (firstSibling) {
@@ -481,5 +498,5 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
-_.uxr = { version: '0.3.0' };
+_.uxr = { version: '0.4.0' };
 })();

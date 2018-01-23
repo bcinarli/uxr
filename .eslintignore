@@ -39,6 +39,7 @@ node_modules/
 jspm_packages/
 test/
 build/
+dist/
 
 # Typescript v1 declaration files
 typings/

@@ -193,7 +193,7 @@ All of the following strings are valid wrapper definitions
 * `<div class='wrapper' id="container"></div>`
 
 ### Element Insertions
-By using `before`, `after`, `prepend` and `append` you can control where to insert newly created elements.
+By using `before`, `after`, `prepend` and `append` you can control where to insert newly created elements. Also with `replaceWith` you can swap the element with a new one.
 
 ``` js
 let el = uxr('.container');
@@ -213,7 +213,45 @@ el.append(uxr('#new'));
 // appends an element add the beginning of selection's content
 el.prepend('<p>This will before "el"</p>');
 el.prepend(uxr('#new'));
+
+// replaces the element with new one
+el.replaceWith('<div id="replaced">Previous element replaced</div>');
 ```
+
+### Traversing
+With traversal methods, you can find adjacent or parent elements accordingly. Almost all traversal methods returns a `uxr` object. You can return the previous `uxr` by chaining `end()` 
+
+```javascript
+
+let el = uxr('li');
+
+// get the immediate parent
+el.closest();
+
+// get the grandparent
+el.closest().closest();
+
+// filter the parents and get the first matched
+el.closest(selector);
+
+// get the next sibling
+el.next();
+
+// get the next sibling if matched 
+el.next(selector);
+
+// get the previous sibling
+el.prev();
+
+// get the previous sibling if matched
+el.prev(selector);
+
+// get the first element in uxr object - selection
+el.first();
+
+// get the last element in uxr object - selection
+el.last();
+``` 
 
 [npm]: https://img.shields.io/npm/v/uxr.svg
 [npm-url]: https://npmjs.com/package/uxr
