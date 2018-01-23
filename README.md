@@ -1,4 +1,4 @@
-<img src="http://uxrocket.io/browsers/uxrocket.png" width="48" align="left" />
+<img src="http://uxrocket.io/browsers/uxrocket.png" width="64" align="right" />
 
 # UXR
 [![npm][npm]][npm-url]
