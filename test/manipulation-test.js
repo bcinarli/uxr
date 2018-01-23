@@ -70,4 +70,15 @@ describe('Manipulation Methods', () => {
             expect(manipulationElem2.el[0].firstChild.matches('#prepended')).to.be.true;
         });
     });
+
+    describe('Replace With', () => {
+        it('should replace the element with a new one', () => {
+            let m3 = _('#manipulation-3');
+            let parent = m3[0].parentNode;
+            m3.replaceWith('<p id="replaced"></p>');
+
+            expect(parent.querySelector('#manipulation-3')).to.be.equal(null);
+            expect(parent.querySelectorAll('#replaced').length).to.be.equal(1);
+        });
+    });
 });
