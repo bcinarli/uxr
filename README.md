@@ -1,3 +1,5 @@
+<img src="http://uxrocket.io/browsers/uxrocket.png" width="48" align="left" />
+
 # UXR
 [![npm][npm]][npm-url]
 [![tests][tests]][tests-url]
@@ -8,8 +10,8 @@ A minimal in mind library for DOM related routines and element selections. UXR w
 UXR has the philosophy of fewer code and low file size. Because of this, widely supported ES6 codes are not transpiled to ES5 versions and not trying to cover all JavaScript methods which are normally written without much effort. UXR provides easy to wrappers for normally complex once.
 
 ## Browser Support
-| Browser | [![chrome][chrome]] | [![firefox][firefox]] | [![opera][opera]] | [![safari][safari]] | [![edge][edge]] |
-| ------- | ------------------- | --------------------- | ----------------- | ------------------- | --------------- |
+| Browser | <img src="http://uxrocket.io/browsers/chrome.png" width="24" /> | <img src="http://uxrocket.io/browsers/firefox.png" width="24" /> | <img src="http://uxrocket.io/browsers/opera.png" width="24" /> | <img src="http://uxrocket.io/browsers/safari.png" width="24" /> | <img src="http://uxrocket.io/browsers/edge.png" width="24" /> |
+| ------- | ----------------- | ------------------- | --------------- | ----------------- | ------------- |
 | Version  | 49+  | 36+ | 37+ | 10+ | 12+ |
 
 ## How To Use
@@ -221,9 +223,3 @@ el.prepend(uxr('#new'));
 
 [cover]: https://codecov.io/gh/bcinarli/uxr/branch/master/graph/badge.svg
 [cover-url]: https://codecov.io/gh/bcinarli/uxr
-
-[chrome]: http://uxrocket.io/browsers/chrome.png
-[firefox]: http://uxrocket.io/browsers/firefox.png
-[opera]: http://uxrocket.io/browsers/opera.png
-[safari]: http://uxrocket.io/browsers/safari.png
-[edge]: http://uxrocket.io/browsers/edge.png
