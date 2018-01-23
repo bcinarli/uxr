@@ -43,3 +43,11 @@ _.extend.before = function (stringOrObject) {
 
     return this;
 };
+
+_.extend.replaceWith = function (stringOrObject) {
+    this.el.forEach(
+        item => item.parentNode.replaceChild(getInsertableElement(stringOrObject), item)
+    );
+
+    return this;
+};
