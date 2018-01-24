@@ -9,13 +9,13 @@ _.extend.closest = function (selector) {
 
     while (el !== null && el.nodeType === 1) {
         if (el.matches(selector)) {
-            return el;
+            return mutated(this, el);
         }
 
         el = el.parentNode;
     }
 
-    return null;
+    return this;
 };
 
 _.extend.next = function (selector) {
