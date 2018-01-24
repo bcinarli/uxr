@@ -45,10 +45,11 @@ describe('CSS Classes', () => {
 
     describe('Toggle Class', () => {
         it('should check toggles a css class from element. Adds the class if not present, removes it otherwise', () => {
-            cssElem.toggleClass(controls.className);
+            cssElem.toggleClass(controls.className).addClass('chained');
             expect(cssElem.hasClass(controls.className)).to.be.false;
             cssElem.toggleClass(controls.className);
             expect(cssElem.hasClass(controls.className)).to.be.true;
+            expect(cssElem.hasClass('chained')).to.be.true;
 
             noneElem.toggleClass(controls.className);
             expect(noneElem.hasClass(controls.className)).to.be.false;

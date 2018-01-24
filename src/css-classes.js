@@ -24,11 +24,13 @@ _.extend.hasClass = function (className) {
 };
 
 _.extend.toggleClass = function (className) {
-    return this.el.forEach(item => {
+    this.el.forEach(item => {
         let classNames = maybeMultiple(className);
 
         if (item.nodeType === 1) {
             classNames.forEach(className => item.classList.toggle(normalizeClassName(className)));
         }
     });
+
+    return this;
 };
