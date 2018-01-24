@@ -7,15 +7,19 @@
 _.extend.closest = function (selector) {
     let el = this.el[0];
 
+    if (!selector) {
+        return mutated(this, [el.parentNode]);
+    }
+
     while (el !== null && el.nodeType === 1) {
         if (el.matches(selector)) {
-            return mutated(this, el);
+            return mutated(this, [el]);
         }
 
         el = el.parentNode;
     }
 
-    return this;
+    return mutated(this, []);
 };
 
 _.extend.next = function (selector) {

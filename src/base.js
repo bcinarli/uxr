@@ -2,7 +2,7 @@
  * uxr
  **/
 
-const _ = window.uxr = function (selector) {
+const _ = window['uxr'] = function (selector) {
     return new uxr(selector);
 };
 

@@ -7,13 +7,13 @@ describe('Traversing', () => {
 
     describe('Closest', () => {
         it('should find the closest parent or returns null', () => {
-            let immediateParent = traversingList.closest('ul');
+            let immediateParent = traversingList.closest();
             let secondParent = traversingList.closest('div');
             let nonMatchedParent = traversingList.closest('#not-matched');
 
-            expect(immediateParent.matches('#traversing-list')).to.be.equal(true);
-            expect(secondParent.matches('#traversing')).to.be.equal(true);
-            expect(nonMatchedParent).to.be.equal(null);
+            expect(immediateParent.el[0].matches('#traversing-list')).to.be.equal(true);
+            expect(secondParent.el[0].matches('#traversing')).to.be.equal(true);
+            expect(nonMatchedParent.length).to.be.equal(0);
         });
     });
 
