@@ -10,8 +10,10 @@ describe('CSS Classes', () => {
     describe('Add Class', () => {
         it('should add a new class to elements classList', () => {
             cssElem.addClass(controls.newClassName);
+            cssElem.addClass('chained-class').addClass('.another-chained-class');
 
             expect(cssElemNode.classList.contains(controls.newClassName)).to.be.true;
+            expect(cssElemNode.classList.contains('chained-class')).to.be.true;
         });
     });
 
@@ -28,6 +30,7 @@ describe('CSS Classes', () => {
     describe('Remove Class', () => {
         it('should remove a new class to elements classList', () => {
             cssElem.removeClass(controls.newClassName);
+            cssElem.removeClass('.chained-class').removeClass('another-chained-class');
 
             expect(cssElemNode.classList.contains(controls.newClassName)).to.be.false;
         });
