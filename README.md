@@ -221,7 +221,7 @@ el.replaceWith('<div id="replaced">Previous element replaced</div>');
 ### Traversing
 With traversal methods, you can find adjacent or parent elements accordingly. Almost all traversal methods returns a `uxr` object. You can return the previous `uxr` by chaining `end()` 
 
-```javascript
+``` js
 
 let el = uxr('li');
 

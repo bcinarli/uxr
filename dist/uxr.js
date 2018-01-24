@@ -3,7 +3,7 @@
  * uxr
  **/
 
-const _ = window.uxr = function (selector) {
+const _ = window['uxr'] = function (selector) {
     return new uxr(selector);
 };
 
@@ -323,15 +323,19 @@ _.ready = function (fn) {
 _.extend.closest = function (selector) {
     let el = this.el[0];
 
+    if (!selector) {
+        return mutated(this, [el.parentNode]);
+    }
+
     while (el !== null && el.nodeType === 1) {
         if (el.matches(selector)) {
-            return el;
+            return mutated(this, [el]);
         }
 
         el = el.parentNode;
     }
 
-    return null;
+    return mutated(this, []);
 };
 
 _.extend.next = function (selector) {
@@ -350,6 +354,7 @@ _.extend.last = function () {
     let last = this.length - 1;
     return mutated(this, this.el.filter((item, index) => index === last));
 };
+
 /**
  * utils
  **/
@@ -498,5 +503,5 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
-_.uxr = { version: '0.4.0' };
+_.uxr = { version: '0.4.1' };
 })();
