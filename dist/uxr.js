@@ -80,7 +80,9 @@ _.extend.value = function (value) {
 /* global maybeMultiple */
 
 const _class = function (stack, className, type) {
-    return stack.el[0].nodeType === 1 && stack.el.forEach(item => maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
+    stack.el[0].nodeType === 1 && stack.el.forEach(item => maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
+
+    return stack;
 };
 
 _.extend.addClass = function (className) {
@@ -503,5 +505,5 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
-_.uxr = { version: '0.4.1' };
+_.uxr = { version: '0.4.2' };
 })();
