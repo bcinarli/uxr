@@ -22,12 +22,42 @@ _.extend.closest = function (selector) {
     return mutated(this, []);
 };
 
+_.extend.parent = function (selector) {
+    return mutated(
+        this,
+        this.el.map(item => item.parentNode)
+            .filter(item => selector ? item.matches(selector) : item));
+};
+
+_.extend.children = function (selector) {
+    return mutated(
+        this,
+        this.el.map(item => Array.from(item.children))
+            .reduce((acc, cur) => acc.concat(cur), [])
+            .filter(item => selector ? item.matches(selector) : item));
+};
+
+_.extend.siblings = function (selector) {
+    return mutated(
+        this,
+        this.el.map(item =>
+            Array.from(item.parentNode.children)
+                .filter(child => !child.isEqualNode(item)))
+            .reduce((acc, cur) => acc.concat(cur), [])
+            .filter(item => selector ? item.matches(selector) : item));
+};
+
 _.extend.next = function (selector) {
-    return mutated(this, this.el.map(item => item.nextElementSibling).filter(item => selector ? item.matches(selector) : item));
+    return mutated(
+        this,
+        this.el.map(item => item.nextElementSibling)
+            .filter(item => selector ? item.matches(selector) : item));
 };
 
 _.extend.prev = function (selector) {
-    return mutated(this, this.el.map(item => item.previousElementSibling).filter(item => selector ? item.matches(selector) : item));
+    return mutated(this,
+        this.el.map(item => item.previousElementSibling)
+            .filter(item => selector ? item.matches(selector) : item));
 };
 
 _.extend.first = function () {

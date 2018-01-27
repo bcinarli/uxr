@@ -17,6 +17,44 @@ describe('Traversing', () => {
         });
     });
 
+    describe('Parent', () => {
+        it('should get the parent or checks if parent matches the selector', () => {
+            let parent = traversingList.parent();
+            let parentSelector = traversingList.parent('.parent');
+            let parentSelectorMatched = traversingList.parent('#traversing-list');
+
+            expect(parent.el[0].matches('#traversing-list')).to.be.equal(true);
+            expect(parentSelector.length).to.be.equal(0);
+            expect(parentSelectorMatched[0].matches('#traversing-list')).to.be.equal(true);
+        });
+    });
+
+    describe('Children', () => {
+        it('should get the children of selected elements or filter the children', () => {
+            let list = _('#traversing-list');
+            let children = list.children();
+            let childrenSelector = list.children('div');
+            let childrenSelectorMatched = list.children('.apple');
+
+            expect(children.length).to.be.equal(3);
+            expect(childrenSelector.length).to.be.equal(0);
+            expect(childrenSelectorMatched.length).to.be.equal(1);
+        });
+    });
+
+    describe('Siblings', () => {
+        it('should get the siblings of selected elements or filter the siblings', () => {
+           let banana = _('#traversing-list .banana');
+           let siblings = banana.siblings();
+           let siblingsSelector = banana.siblings('.banana');
+           let siblingsSelectorMatched = banana.siblings('.apple');
+
+            expect(siblings.length).to.be.equal(2);
+            expect(siblingsSelector.length).to.be.equal(0);
+            expect(siblingsSelectorMatched.length).to.be.equal(1);
+        })
+    });
+
     describe('Next', () => {
         it('should find the next element sibling', () => {
             let next = traversingList.filter('.apple').next();
