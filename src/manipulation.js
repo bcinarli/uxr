@@ -19,7 +19,7 @@ _.extend.append = function (stringOrObject) {
 
 _.extend.prepend = function (stringOrObject) {
     return this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'firstChild'));
+        item => insertBefore(stringOrObject, item, 'firstChild', false));
 };
 
 _.extend.after = function (stringOrObject) {

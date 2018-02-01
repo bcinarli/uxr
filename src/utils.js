@@ -69,3 +69,7 @@ const mutated = (orgObj, newSet) => {
 
     return obj;
 };
+
+// Is Object => {key: value}
+// eslint-disable-next-line
+const isObject = objLike => ({}.toString.call(objLike) === '[object Object]');

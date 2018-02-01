@@ -26,7 +26,15 @@ const createElement = (type, attributes) => {
     let element = document.createElement(type);
 
     Object.keys(attributes).forEach(key => {
-        element[key] = attributes[key];
+        if(typeof attributes[key] === 'object' && !Array.isArray(attributes[key])){
+            Object.keys(attributes[key]).forEach(prop => {
+                console.log(attributes[key][prop]);
+                element[key][prop] = attributes[key][prop];
+            });
+        }
+        else {
+            element[key] = attributes[key];
+        }
     });
 
     return element;
@@ -58,6 +66,15 @@ const appendToBody = elements => appendTo(document.body, elements);
     let div = createElement('div', {id: 'css-classes'});
     div.classList.add(controls.className);
 
+    appendToBody(div);
+})();
+
+(() => {
+    let div = createElement('div', {id: 'css'});
+    let inner = createElement('div', {id: 'css-test', style: {display: 'inline', color: 'blue', border: '1px solid red', marginTop: '10px'}});
+    let inner2 = createElement('div', {id: 'css-test2', style: {display: 'flex', fontWeight: 'bold'}});
+
+    appendTo(div, [inner, inner2]);
     appendToBody(div);
 })();
 
