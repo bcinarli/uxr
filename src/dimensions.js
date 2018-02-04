@@ -4,68 +4,77 @@
 
 /* global removeUnit */
 
-_.extend.contentWidth = _.extend.width = function (newWidth) {
-    if (this.length > 0) {
-        if (newWidth) {
-            this.el.forEach(item => item.style.width = newWidth);
-            return this;
+const contentSize = (stack, type, newSize) => {
+    let vars = {
+        client: type === 'width' ? 'clientWidth' : 'clientHeight',
+        styleFirst: type === 'width' ? 'paddingLeft' : 'paddingTop',
+        styleLast: type === 'width' ? 'paddingRight' : 'paddingBottom'
+    };
+
+    if (stack.length > 0) {
+        if (newSize) {
+            stack.el.forEach(item => item.style[type] = newSize);
+
+            return stack;
         }
 
         else {
-            return this.el[0].clientWidth - removeUnit(this.el[0].style.paddingLeft) - removeUnit(this.el[0].style.paddingRight);
+            let el = stack.el[0];
+
+            return el[vars.client]
+                - removeUnit(el.style[vars.styleFirst])
+                - removeUnit(el.style[vars.styleLast]);
         }
     }
 
     return false;
+};
+
+const clientSize = (stack, type) => {
+    return stack.length > 0 ? stack.el[0][type] : false;
+};
+
+const offsetSize = (stack, type, margins) => {
+    let vars = {
+        styleFirst: margins ? 'marginLeft' : 'marginTop',
+        styleLast: margins ? 'marginRight' : 'marginBottom'
+    };
+
+    if (stack.length > 0) {
+        let el = stack.el[0];
+        let sizeType = el[type];
+
+        if (margins) {
+            sizeType += removeUnit(el.style[vars.styleFirst])
+                + removeUnit(el.style[vars.styleLast]);
+        }
+
+        return sizeType;
+    }
+
+    return false;
+};
+
+_.extend.contentWidth = _.extend.width = function (newWidth) {
+    return contentSize(this, 'width', newWidth);
 };
 
 _.extend.clientWidth = _.extend.innerWidth = function () {
-    return this.length > 0 ? this.el[0].clientWidth : false;
+    return clientSize(this, 'clientWidth');
 };
 
 _.extend.offsetWidth = _.extend.outerWidth = function (includeMargins = false) {
-    if (this.length > 0) {
-        let outerWidth = this.el[0].offsetWidth;
-
-        if (includeMargins) {
-            outerWidth += removeUnit(this.el[0].style.marginLeft) + removeUnit(this.el[0].style.marginRight);
-        }
-
-        return outerWidth;
-    }
-
-    return false;
+    return offsetSize(this, 'offsetWidth', includeMargins);
 };
 
 _.extend.contentHeight = _.extend.height = function (newHeight) {
-    if (this.length > 0) {
-        if (newHeight) {
-            this.el.forEach(item => item.style.height = newHeight);
-            return this;
-        }
-
-        else {
-            return this.el[0].clientHeight - removeUnit(this.el[0].style.paddingTop) - removeUnit(this.el[0].style.paddingBottom);
-        }
-    }
-
-    return false;
+    return contentSize(this, 'height', newHeight);
 };
 
 _.extend.clientHeight = _.extend.innerHeight = function () {
-    return this.length > 0 ? this.el[0].clientHeight : false;
+    return clientSize(this, 'clientHeight');
 };
 
 _.extend.offsetHeight = _.extend.outerHeight = function (includeMargins = false) {
-    if (this.length > 0) {
-        let outerHeight = this.el[0].offsetHeight;
-
-        if (includeMargins) {
-            outerHeight += removeUnit(this.el[0].style.marginTop) + removeUnit(this.el[0].style.marginBottom);
-        }
-
-        return outerHeight;
-    }
-
-    return false;
+    return offsetSize(this, 'offsetHeight', includeMargins);
 };
