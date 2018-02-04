@@ -73,3 +73,7 @@ const mutated = (orgObj, newSet) => {
 // Is Object => {key: value}
 // eslint-disable-next-line
 const isObject = objLike => ({}.toString.call(objLike) === '[object Object]');
+
+// Remove Unit
+// eslint-disable-next-line
+const removeUnit = number => parseInt(number, 10);

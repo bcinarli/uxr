@@ -25,17 +25,18 @@ let controls = {
 const createElement = (type, attributes) => {
     let element = document.createElement(type);
 
-    Object.keys(attributes).forEach(key => {
-        if(typeof attributes[key] === 'object' && !Array.isArray(attributes[key])){
-            Object.keys(attributes[key]).forEach(prop => {
-                console.log(attributes[key][prop]);
-                element[key][prop] = attributes[key][prop];
-            });
-        }
-        else {
-            element[key] = attributes[key];
-        }
-    });
+    if (attributes) {
+        Object.keys(attributes).forEach(key => {
+            if (typeof attributes[key] === 'object' && !Array.isArray(attributes[key])) {
+                Object.keys(attributes[key]).forEach(prop => {
+                    element[key][prop] = attributes[key][prop];
+                });
+            }
+            else {
+                element[key] = attributes[key];
+            }
+        });
+    }
 
     return element;
 };
@@ -44,6 +45,8 @@ const appendTo = (to, elements) => {
     let list = Array.isArray(elements) ? elements : [elements];
 
     list.forEach(element => to.appendChild(element));
+
+    return to;
 };
 
 const appendToBody = elements => appendTo(document.body, elements);
@@ -69,9 +72,13 @@ const appendToBody = elements => appendTo(document.body, elements);
     appendToBody(div);
 })();
 
+// css setup
 (() => {
     let div = createElement('div', {id: 'css'});
-    let inner = createElement('div', {id: 'css-test', style: {display: 'inline', color: 'blue', border: '1px solid red', marginTop: '10px'}});
+    let inner = createElement('div', {
+        id: 'css-test',
+        style: {display: 'inline', color: 'blue', border: '1px solid red', marginTop: '10px'}
+    });
     let inner2 = createElement('div', {id: 'css-test2', style: {display: 'flex', fontWeight: 'bold'}});
 
     appendTo(div, [inner, inner2]);
@@ -88,6 +95,24 @@ const appendToBody = elements => appendTo(document.body, elements);
 
     appendToBody(div);
     appendToBody(div2);
+})();
+
+// dimensions setup
+(() => {
+    let div = createElement('div', {id: 'dimensions'});
+    let widthTest = createElement('div', {id: 'dim-width', innerText: 'Hello World'});
+    let widthTest2 = createElement('div', {
+        id: 'dim-width2',
+        innerText: 'Hello World',
+        style: {width: '50%', padding: '10px', border: '5px solid'}
+    });
+    let widthTest3 = createElement('ul', {id: 'dim-width3'});
+    let widthTest3Li = createElement('li', {style: {width: '500px', padding: '5px', margin: '10px'}});
+    let widthTest3Li2 = createElement('li');
+
+    appendTo(div, [widthTest, widthTest2, appendTo(widthTest3, [widthTest3Li, widthTest3Li2])]);
+
+    appendToBody(div);
 })();
 
 // end setup
