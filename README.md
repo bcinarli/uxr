@@ -4,6 +4,8 @@
 [![npm][npm]][npm-url]
 [![tests][tests]][tests-url]
 [![coverage][cover]][cover-url]
+[![Open Source Love][os]][os-url]
+[![PRs Welcome][pr]][pr-url]
 
 A minimal in mind library for DOM related routines and element selections. UXR wraps some most used methods like CSS Classes, Event Management, Data Management, Attribute selections/updates. Supports chaining and plugins.
 
@@ -274,7 +276,7 @@ el.siblings(selector);
 ### CSS
 `css` method helps to set or get style attributes of the elements.
 
-```js
+``` js
 let el = uxr(selector);
 
 // get a style property
@@ -299,7 +301,7 @@ el.css({width: '100px', height: '50px', 'margin-bottom': '5px'});
 ### Dimensions
 Dimension related methods returns or sets content width or height according to dimension method. Except setting `width` and `height` methods, all other usages break the chaining.
 
-```js
+``` js
 let el = uxr(selector);
 
 // returns the first elements content width
@@ -363,3 +365,9 @@ el.offsetHeight(true); // alias method
 
 [cover]: https://codecov.io/gh/bcinarli/uxr/branch/master/graph/badge.svg
 [cover-url]: https://codecov.io/gh/bcinarli/uxr
+
+[os]:https://badges.frapsoft.com/os/v2/open-source.svg?v=103
+[os-url]:(https://github.com/ellerbrock/open-source-badges/)
+
+[pr]:https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[pr-url]:http://makeapullrequest.com

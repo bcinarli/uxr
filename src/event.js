@@ -5,17 +5,20 @@
 /* global hashCode */
 /* global maybeMultiple */
 
+const removeEventFromItem = (item, event, fn) => {
+    item.removeEventListener(event, item.uxrAttachedEvents[event][fn]);
+    delete item.uxrAttachedEvents[event][fn];
+
+    return item;
+};
+
 _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
     let events = maybeMultiple(eventName);
 
-    if (typeof eventHandlerOrSelector === 'string') {
-        handler = eventHandler;
-        stack = this.find(eventHandlerOrSelector);
-    }
-
-    if (typeof eventHandler !== 'undefined') {
+    if (typeof eventHandlerOrSelector === 'string'
+        || typeof eventHandler !== 'undefined') {
         handler = eventHandler;
         stack = this.find(eventHandlerOrSelector);
     }
@@ -25,21 +28,17 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
 
         events.forEach(event => {
             // make sure not to give an error, if user tried to remove unattached event
-            if (typeof item.uxrAttachedEvents[event] === 'undefined') {
-                return;
-            }
+            if (typeof item.uxrAttachedEvents[event] !== 'undefined') {
+                if (typeof handler === 'undefined') {
+                    Object.keys(item.uxrAttachedEvents[event]).forEach(fn => {
+                        removeEventFromItem(item, event, fn);
+                    });
+                }
 
-            else if (typeof handler === 'undefined') {
-                Object.keys(item.uxrAttachedEvents[event]).forEach(fn => {
-                    item.removeEventListener(event, item.uxrAttachedEvents[event][fn]);
-                    delete item.uxrAttachedEvents[event];
-                });
-            }
-
-            else {
-                let hash = hashCode((handler).toString());
-                item.removeEventListener(event, item.uxrAttachedEvents[event][hash]);
-                delete item.uxrAttachedEvents[event][hash];
+                else {
+                    let hash = hashCode((handler).toString());
+                    removeEventFromItem(item, event, hash);
+                }
             }
         });
     });

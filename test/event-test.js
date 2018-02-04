@@ -73,7 +73,7 @@ describe('Event Manager', () => {
             inputElem.attr('value', controls.value);
             inputElem.trigger('change');
 
-            expect(inputElem[0].uxrAttachedEvents['change']).to.be.undefined;
+            expect(inputElem[0].uxrAttachedEvents['change']).to.be.empty;
             expect(inputElem.attr('value')).to.not.be.equal(value);
         });
 
@@ -97,13 +97,15 @@ describe('Event Manager', () => {
 
         it('should remove multiple events at once', () => {
             inputElem.off('focus blur');
-            expect(inputElem[0].uxrAttachedEvents['focus']).to.be.undefined;
-            expect(inputElem[0].uxrAttachedEvents['blur']).to.be.undefined;
+            expect(inputElem[0].uxrAttachedEvents['focus']).to.be.empty;
+            expect(inputElem[0].uxrAttachedEvents['blur']).to.be.empty;
         });
 
         it('should remove the attached event with a handler from child element', () => {
             // if you send handler, it only removes the handler but event type stays in element object
             paragraphElem.off('click', '.event-link', handler);
+
+            console.log(paragraphElem.find('.event-link')[0].uxrAttachedEvents['click']);
 
             expect(paragraphElem.find('.event-link')[0].uxrAttachedEvents['click']).to.be.empty;
         });
@@ -119,7 +121,7 @@ describe('Event Manager', () => {
             paragraphElem.off('click', '.event-link2');
 
             expect(triggered.includes('child-element2')).to.be.true;
-            expect(paragraphElem.find('.event-link2')[0].uxrAttachedEvents['click']).to.be.undefined;
+            expect(paragraphElem.find('.event-link2')[0].uxrAttachedEvents['click']).to.be.empty;
         });
     });
 
