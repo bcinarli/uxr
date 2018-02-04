@@ -110,6 +110,48 @@ _.extend.toggleClass = function (className) {
 };
 
 /**
+ * css
+ **/
+
+/* global toDomString */
+/* global isObject */
+
+_.extend.css = function (prop, value) {
+    let properties = [];
+    let values = value ? [value] : [];
+    let list = {};
+
+    if (typeof prop === 'string') {
+        properties = [toDomString(prop)];
+    }
+
+    else if (isObject(prop)) {
+        Object.keys(prop).forEach(p => {
+            properties.push(toDomString(p));
+            values.push(prop[p]);
+        });
+    }
+
+    else if (Array.isArray(prop)) {
+        properties = prop.map(p => toDomString(p));
+    }
+
+    if (values.length > 0) {
+        return this.el.map(item => properties.forEach((p, i) => item.style[p] = values[i]));
+    }
+
+    if (properties.length > 1) {
+        properties.forEach(prop => {
+            list[prop] = this.el[0].style[prop];
+        });
+    }
+    else {
+        list = this.el[0].style[properties[0]];
+    }
+
+    return list;
+};
+/**
  * data
  **/
 
@@ -119,19 +161,85 @@ _.extend.data = function (name, value) {
     let item = this.el[0];
     let domName = toDomString(name);
 
-    if (typeof item.dataset !== 'undefined') {
-        if (typeof value !== 'undefined') {
-            item.dataset[domName] = value;
-        }
-
-        else {
-            return item.dataset[domName];
-        }
+    if (typeof value !== 'undefined') {
+        item.dataset[domName] = value;
+        return this;
     }
 
     else {
-        return item.getAttribute('data-' + name);
+        return item.dataset[domName];
     }
+};
+/**
+ * dimensions
+ **/
+
+/* global removeUnit */
+
+_.extend.contentWidth = _.extend.width = function (newWidth) {
+    if (this.length > 0) {
+        if (newWidth) {
+            this.el.forEach(item => item.style.width = newWidth);
+            return this;
+        }
+
+        else {
+            return this.el[0].clientWidth - removeUnit(this.el[0].style.paddingLeft) - removeUnit(this.el[0].style.paddingRight);
+        }
+    }
+
+    return false;
+};
+
+_.extend.clientWidth = _.extend.innerWidth = function () {
+    return this.length > 0 ? this.el[0].clientWidth : false;
+};
+
+_.extend.offsetWidth = _.extend.outerWidth = function (includeMargins = false) {
+    if (this.length > 0) {
+        let outerWidth = this.el[0].offsetWidth;
+
+        if (includeMargins) {
+            outerWidth += removeUnit(this.el[0].style.marginLeft) + removeUnit(this.el[0].style.marginRight);
+        }
+
+        return outerWidth;
+    }
+
+    return false;
+};
+
+_.extend.contentHeight = _.extend.height = function (newHeight) {
+    if (this.length > 0) {
+        if (newHeight) {
+            this.el.forEach(item => item.style.height = newHeight);
+            return this;
+        }
+
+        else {
+            return this.el[0].clientHeight - removeUnit(this.el[0].style.paddingTop) - removeUnit(this.el[0].style.paddingBottom);
+        }
+    }
+
+    return false;
+};
+
+_.extend.clientHeight = _.extend.innerHeight = function () {
+    return this.length > 0 ? this.el[0].clientHeight : false;
+};
+
+_.extend.offsetHeight = _.extend.outerHeight = function (includeMargins = false) {
+    if (this.length > 0) {
+        let outerHeight = this.el[0].offsetHeight;
+
+        if (includeMargins) {
+            outerHeight += removeUnit(this.el[0].style.marginTop) + removeUnit(this.el[0].style.marginBottom);
+        }
+
+        return outerHeight;
+    }
+
+    return false;
 };
 /**
  * end
@@ -289,7 +397,7 @@ _.extend.append = function (stringOrObject) {
 
 _.extend.prepend = function (stringOrObject) {
     return this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'firstChild'));
+        item => insertBefore(stringOrObject, item, 'firstChild', false));
 };
 
 _.extend.after = function (stringOrObject) {
@@ -342,12 +450,42 @@ _.extend.closest = function (selector) {
     return mutated(this, []);
 };
 
+_.extend.parent = function (selector) {
+    return mutated(
+        this,
+        this.el.map(item => item.parentNode)
+            .filter(item => selector ? item.matches(selector) : item));
+};
+
+_.extend.children = function (selector) {
+    return mutated(
+        this,
+        this.el.map(item => Array.from(item.children))
+            .reduce((acc, cur) => acc.concat(cur), [])
+            .filter(item => selector ? item.matches(selector) : item));
+};
+
+_.extend.siblings = function (selector) {
+    return mutated(
+        this,
+        this.el.map(item =>
+            Array.from(item.parentNode.children)
+                .filter(child => !child.isEqualNode(item)))
+            .reduce((acc, cur) => acc.concat(cur), [])
+            .filter(item => selector ? item.matches(selector) : item));
+};
+
 _.extend.next = function (selector) {
-    return mutated(this, this.el.map(item => item.nextElementSibling).filter(item => selector ? item.matches(selector) : item));
+    return mutated(
+        this,
+        this.el.map(item => item.nextElementSibling)
+            .filter(item => selector ? item.matches(selector) : item));
 };
 
 _.extend.prev = function (selector) {
-    return mutated(this, this.el.map(item => item.previousElementSibling).filter(item => selector ? item.matches(selector) : item));
+    return mutated(this,
+        this.el.map(item => item.previousElementSibling)
+            .filter(item => selector ? item.matches(selector) : item));
 };
 
 _.extend.first = function () {
@@ -430,6 +568,14 @@ const mutated = (orgObj, newSet) => {
 
     return obj;
 };
+
+// Is Object => {key: value}
+// eslint-disable-next-line
+const isObject = objLike => ({}.toString.call(objLike) === '[object Object]');
+
+// Remove Unit
+// eslint-disable-next-line
+const removeUnit = number => parseInt(number, 10);
 /**
  * wrap
  **/
@@ -507,5 +653,5 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
-_.uxr = { version: '0.4.2' };
+_.uxr = { version: '0.5.0' };
 })();

@@ -251,7 +251,109 @@ el.first();
 
 // get the last element in uxr object - selection
 el.last();
+
+// get the immediate parent
+el.parent();
+
+// get the immediate parent if matched to selector
+el.parent(selector);
+
+// get the all children element
+el.children();
+
+// get the all matched children
+el.children(selector);
+
+// get the all siblings
+el.siblings();
+
+// get the all matched siblings
+el.siblings(selector);
 ``` 
+
+### CSS
+`css` method helps to set or get style attributes of the elements.
+
+```js
+let el = uxr(selector);
+
+// get a style property
+el.css('display'); // returns the display property value
+
+// get a list of style properties
+// returns an object with listed values. 
+// note that, you can ask for properties both kebap-case and camelCase
+el.css(['display', 'margin', 'padding-top', 'borderLeft']); 
+// returns {display: value, margin: value, paddingTop: value, borderLeft: value}
+
+// sets or updates a single property
+el.css('padding', '10px');
+el.css('background-color', '#ccc');
+el.css('backgroundSize', '100% auto');
+
+// sets or updates a list of properties
+// note that, you can send a object contains property:value pairs
+el.css({width: '100px', height: '50px', 'margin-bottom': '5px'});
+```
+
+### Dimensions
+Dimension related methods returns or sets content width or height according to dimension method. Except setting `width` and `height` methods, all other usages break the chaining.
+
+```js
+let el = uxr(selector);
+
+// returns the first elements content width
+// note that: this return only the content width, no-border, no-padding, no-margin
+el.width();
+el.contentWidth(); // alias method
+
+// sets the width of elements in the uxr object.
+// similar method to el.css('width', value); 
+el.width('100px');
+el.contentWidth('100%');
+
+// returns the clientWidth of the first element
+// note that: this is only differs from width method with addition of padding
+el.innerWidth();
+el.clientWidth(); // alias method
+
+
+// returns the offsetWidth of the first element
+// note that: this calculates width with border, padding and content-width altogether
+el.outerWidth();
+el.offsetWidth(); // alias method
+
+// returns the offsetWidth of the first element including margins
+// note that: this calculates width with margin, border, padding and content-width altogether
+el.outerWidth(true);
+el.offsetWidth(true); // alias method
+
+// returns the first elements content height
+// note that: this return only the content height, no-border, no-padding, no-margin
+el.height();
+el.contentHeight(); // alias method
+
+// sets the height of elements in the uxr object.
+// similar method to el.css('height', value); 
+el.height('100px');
+el.contentHeight('100%');
+
+// returns the clientHeight of the first element
+// note that: this is only differs from width method with addition of padding
+el.innerHeight();
+el.clientHeight(); // alias method
+
+
+// returns the offsetHeight of the first element
+// note that: this calculates height with border, padding and content-height altogether
+el.outerHeight();
+el.offsetHeight(); // alias method
+
+// returns the offsetHeight of the first element including margins
+// note that: this calculates height with margin, border, padding and content-height altogether
+el.outerHeight(true);
+el.offsetHeight(true); // alias method
+```
 
 [npm]: https://img.shields.io/npm/v/uxr.svg
 [npm-url]: https://npmjs.com/package/uxr
