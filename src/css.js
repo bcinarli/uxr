@@ -5,37 +5,47 @@
 /* global toDomString */
 /* global isObject */
 
-_.extend.css = function (prop, value) {
+const maybePropIsObject = prop => {
     let properties = [];
-    let values = value ? [value] : [];
-    let list = {};
+    let values = [];
 
-    if (typeof prop === 'string') {
-        properties = [toDomString(prop)];
-    }
-
-    else if (isObject(prop)) {
+    if (isObject(prop)) {
         Object.keys(prop).forEach(p => {
             properties.push(toDomString(p));
             values.push(prop[p]);
         });
+        return {properties, values};
     }
 
-    else if (Array.isArray(prop)) {
-        properties = prop.map(p => toDomString(p));
+    return false;
+};
+
+_.extend.css = function (prop, value) {
+    let options = {
+        properties: typeof prop === 'string' ? [toDomString(prop)] : [],
+        values: value ? [value] : []
+    };
+    let list = {};
+
+    // if the prop is object for set of prop/value pair
+    options = maybePropIsObject(prop) || options;
+
+    if (Array.isArray(prop)) {
+        options.properties = prop.map(p => toDomString(p));
     }
 
-    if (values.length > 0) {
-        return this.el.map(item => properties.forEach((p, i) => item.style[p] = values[i]));
+    if (options.values.length > 0) {
+        return this.el.map(item => options.properties.forEach((p, i) => item.style[p] = options.values[i]));
     }
 
-    if (properties.length > 1) {
-        properties.forEach(prop => {
+    // if no value set and only prop name set, return the values of asked prop(s)
+    if (options.properties.length > 1) {
+        options.properties.forEach(prop => {
             list[prop] = this.el[0].style[prop];
         });
     }
     else {
-        list = this.el[0].style[properties[0]];
+        list = this.el[0].style[options.properties[0]];
     }
 
     return list;
