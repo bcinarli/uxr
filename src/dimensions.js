@@ -19,13 +19,7 @@ const contentSize = ({stack, type, newSize}) => {
         return stack;
     }
 
-    else {
-        let el = stack.el[0];
-
-        return el[client]
-            - removeUnit(el.style[styleFirst])
-            - removeUnit(el.style[styleLast]);
-    }
+    return stack.el[0][client] - removeUnit(stack.el[0].style[styleFirst]) - removeUnit(stack.el[0].style[styleLast]);
 };
 
 const clientSize = ({stack, type}) => {
