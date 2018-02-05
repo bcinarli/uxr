@@ -4,7 +4,9 @@
 
 _.extend.attr = function (attr, value) {
     if (value) {
-        return this.el.forEach(item => item[attr] = value);
+        this.el.forEach(item => item[attr] = value);
+
+        return this;
     }
 
     return this.el[0][attr];

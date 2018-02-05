@@ -6,34 +6,48 @@
 /* global insertBefore */
 
 _.extend.empty = function () {
-    return this.el.forEach(item => item.innerHTML = '');
+    this.el.forEach(item => item.innerHTML = '');
+
+    return this;
 };
 
 _.extend.remove = function () {
-    return this.el.forEach(item => item.parentNode.removeChild(item));
+    this.el.forEach(item => item.parentNode.removeChild(item));
+
+    return this;
 };
 
 _.extend.append = function (stringOrObject) {
-    return this.el.forEach(item => item.appendChild(getInsertableElement(stringOrObject)));
+    this.el.forEach(item => item.appendChild(getInsertableElement(stringOrObject)));
+
+    return this;
 };
 
 _.extend.prepend = function (stringOrObject) {
-    return this.el.forEach(
+    this.el.forEach(
         item => insertBefore(stringOrObject, item, 'firstChild', false));
+
+    return this;
 };
 
 _.extend.after = function (stringOrObject) {
-    return this.el.forEach(
+    this.el.forEach(
         item => insertBefore(stringOrObject, item, 'nextSibling', true));
+
+    return this;
 };
 
 _.extend.before = function (stringOrObject) {
-    return this.el.forEach(
+    this.el.forEach(
         item => insertBefore(stringOrObject, item, 'self', true));
+
+    return this;
 };
 
 _.extend.replaceWith = function (stringOrObject) {
-    return this.el.map(
+    this.el.map(
         item => item.parentNode.replaceChild(getInsertableElement(stringOrObject), item)
     );
+
+    return this;
 };

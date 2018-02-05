@@ -31,8 +31,8 @@ describe('Element Wrapping', () => {
 
             let newParent = single['0'].parentNode;
 
-            expect(firstParent.matches('#wrap')).to.be.true;
-            expect(newParent.matches('#wrap')).to.be.false;
+            expect(firstParent.matches('#wrap')).to.be.equal(true);
+            expect(newParent.matches('#wrap')).to.be.equal(false);
         });
 
         it('should wrap and replace child if the element is the only child', () => {
@@ -42,14 +42,13 @@ describe('Element Wrapping', () => {
 
             singleInner.wrap('<div />');
 
-            let newParent = singleInner['0'].parentNode;
             let newLength = parent.childNodes.length;
             let newChild = parent.firstChild.classList.contains('wrap-single-inner');
 
             expect(length).to.be.equal(1);
-            expect(child).to.be.true;
+            expect(child).to.be.equal(true);
             expect(newLength).to.be.equal(1);
-            expect(newChild).to.be.false;
+            expect(newChild).to.be.equal(false);
         });
 
         it('should wrap element with "div" has a class value "new-wrap" and id value "wrap-id"', () => {
@@ -59,9 +58,9 @@ describe('Element Wrapping', () => {
 
             let newParent = singleAttr['0'].parentNode;
 
-            expect(firstParent.matches('#wrap')).to.be.true;
-            expect(newParent.matches('#wrap-id')).to.be.true;
-            expect(newParent.classList.contains('new-wrap')).to.be.true;
+            expect(firstParent.matches('#wrap')).to.be.equal(true);
+            expect(newParent.matches('#wrap-id')).to.be.equal(true);
+            expect(newParent.classList.contains('new-wrap')).to.be.equal(true);
         });
     });
 

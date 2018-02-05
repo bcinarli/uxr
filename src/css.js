@@ -53,7 +53,9 @@ _.extend.css = function (prop, value) {
     options = maybePropIsObject(prop) || options;
 
     if (options.values.length > 0) {
-        return this.el.map(item => options.properties.forEach((p, i) => item.style[p] = options.values[i]));
+        this.el.map(item => options.properties.forEach((p, i) => item.style[p] = options.values[i]));
+
+        return this;
     }
 
     // if no value set then we are asking for getting the values of properties

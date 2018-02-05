@@ -13,7 +13,5 @@ _.extend.data = function (name, value) {
         return this;
     }
 
-    else {
-        return item.dataset[domName];
-    }
+    return item.dataset[domName];
 };
