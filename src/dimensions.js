@@ -4,7 +4,7 @@
 
 /* global removeUnit */
 
-const contentSize = (stack, type, newSize) => {
+const contentSize = ({stack, type, newSize}) => {
     let vars = {
         client: type === 'width' ? 'clientWidth' : 'clientHeight',
         styleFirst: type === 'width' ? 'paddingLeft' : 'paddingTop',
@@ -30,11 +30,11 @@ const contentSize = (stack, type, newSize) => {
     return false;
 };
 
-const clientSize = (stack, type) => {
+const clientSize = ({stack, type}) => {
     return stack.length > 0 ? stack.el[0][type] : false;
 };
 
-const offsetSize = (stack, type, margins) => {
+const offsetSize = ({stack, type, margins}) => {
     let vars = {
         styleFirst: margins ? 'marginLeft' : 'marginTop',
         styleLast: margins ? 'marginRight' : 'marginBottom'
@@ -56,25 +56,25 @@ const offsetSize = (stack, type, margins) => {
 };
 
 _.extend.contentWidth = _.extend.width = function (newWidth) {
-    return contentSize(this, 'width', newWidth);
+    return contentSize({stack: this, type: 'width', newSize: newWidth});
 };
 
 _.extend.clientWidth = _.extend.innerWidth = function () {
-    return clientSize(this, 'clientWidth');
+    return clientSize({stack: this, type: 'clientWidth'});
 };
 
 _.extend.offsetWidth = _.extend.outerWidth = function (includeMargins = false) {
-    return offsetSize(this, 'offsetWidth', includeMargins);
+    return offsetSize({stack: this, type: 'offsetWidth', margins: includeMargins});
 };
 
 _.extend.contentHeight = _.extend.height = function (newHeight) {
-    return contentSize(this, 'height', newHeight);
+    return contentSize({stack: this, type: 'height', newSize: newHeight});
 };
 
 _.extend.clientHeight = _.extend.innerHeight = function () {
-    return clientSize(this, 'clientHeight');
+    return clientSize({stack: this, type: 'clientHeight'});
 };
 
 _.extend.offsetHeight = _.extend.outerHeight = function (includeMargins = false) {
-    return offsetSize(this, 'offsetHeight', includeMargins);
+    return offsetSize({stack: this, type: 'offsetHeight', margins: includeMargins});
 };
