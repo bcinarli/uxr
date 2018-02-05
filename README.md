@@ -4,9 +4,11 @@
 [![npm][npm]][npm-url]
 [![tests][tests]][tests-url]
 [![coverage][cover]][cover-url]
+[![devDependencies Status][dm]][dm-url]
+[![Maintainability][cc]][cc-url]
 [![Open Source Love][os]][os-url]
 [![PRs Welcome][pr]][pr-url]
-[![Maintainability][cc]][cc-url]
+
 
 A minimal in mind library for DOM related routines and element selections. UXR wraps some most used methods like CSS Classes, Event Management, Data Management, Attribute selections/updates. Supports chaining and plugins.
 
@@ -375,3 +377,6 @@ el.offsetHeight(true); // alias method
 
 [cc]:https://api.codeclimate.com/v1/badges/2da503653af06036b031/maintainability
 [cc-url]: https://codeclimate.com/github/bcinarli/uxr/maintainability
+
+[dm]:https://david-dm.org/bcinarli/uxr/dev-status.svg
+[dm-url]:https://david-dm.org/bcinarli/uxr?type=dev
