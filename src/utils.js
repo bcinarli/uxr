@@ -45,7 +45,9 @@ const getInsertableElement = s => {
     let insertableElement = elementFromString(s);
 
     if (insertableElement instanceof uxr) {
-        insertableElement = insertableElement.el[0];
+        let template = document.createElement('template');
+        insertableElement.el.forEach(item => template.content.appendChild(item));
+        insertableElement = template.content;
     }
 
     return insertableElement;
