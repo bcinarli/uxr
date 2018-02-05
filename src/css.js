@@ -20,12 +20,22 @@ const maybePropIsObject = prop => {
     return false;
 };
 
+const getStyles = (el, props) => {
+    let list = {};
+
+    props.forEach(prop => {
+        list[prop] = el.style[prop];
+    });
+
+    return props.length === 1 ? list[props[0]] : list;
+};
+
+
 _.extend.css = function (prop, value) {
     let options = {
         properties: typeof prop === 'string' ? [toDomString(prop)] : [],
         values: value ? [value] : []
     };
-    let list = {};
 
     // if the prop is object for set of prop/value pair
     options = maybePropIsObject(prop) || options;
@@ -38,15 +48,9 @@ _.extend.css = function (prop, value) {
         return this.el.map(item => options.properties.forEach((p, i) => item.style[p] = options.values[i]));
     }
 
-    // if no value set and only prop name set, return the values of asked prop(s)
-    if (options.properties.length > 1) {
-        options.properties.forEach(prop => {
-            list[prop] = this.el[0].style[prop];
-        });
-    }
+    // if no value set then we are asking for getting the values of properties
+    // this breaks the chaining
     else {
-        list = this.el[0].style[options.properties[0]];
+        return getStyles(this.el[0], options.properties);
     }
-
-    return list;
 };
