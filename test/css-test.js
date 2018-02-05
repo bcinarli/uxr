@@ -3,7 +3,21 @@
  **/
 
 describe('CSS', () => {
+    // css setup
+    (() => {
+        let div = createElement('div', {id: 'css'});
+        let inner = createElement('div', {
+            id: 'css-test',
+            style: {display: 'inline', color: 'blue', border: '1px solid red', marginTop: '10px'}
+        });
+        let inner2 = createElement('div', {id: 'css-test2', style: {display: 'flex', fontWeight: 'bold'}});
+
+        appendTo(div, [inner, inner2]);
+        appendToBody(div);
+    })();
+
     let css = _('#css-test, #css-test2');
+
     it('should return the value of CSS property', () => {
         let display = css.css('display');
         let marginTop = css.css('margin-top');

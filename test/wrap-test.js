@@ -3,6 +3,22 @@
  **/
 
 describe('Element Wrapping', () => {
+    // wrap setup
+    (() => {
+        let div = createElement('div', {id: 'wrap'});
+        let single = createElement('div', {id: 'wrap-single'});
+        let singleWithAttr = createElement('div', {id: 'wrap-single-attr'});
+        let singleInner = createElement('div', {id: 'wrap-inner', innerHTML: '<div class="wrap-single-inner"></div>'});
+        let apple = createElement('li', {innerText: 'Apple'});
+        let banana = createElement('li', {innerText: 'Banana'});
+        let strawberry = createElement('li', {innerText: 'Strawberry'});
+
+        let singleWrapAll = createElement('div', {id: 'wrap-all', innerHTML: '<span>Hello</span>'});
+
+        appendTo(div, [single, singleWithAttr, singleInner, apple, banana, strawberry, singleWrapAll]);
+        appendToBody(div);
+    })();
+
     describe('Single Element Wrap', () => {
         let single = _('#wrap-single');
         let singleAttr = _('#wrap-single-attr');

@@ -3,6 +3,19 @@
  **/
 
 describe('Attribute Methods', () => {
+    // attribute setup
+    (() => {
+        let div = createElement('div', {id: 'attr'});
+        let paragraph = createElement('p', {id: 'attr-paragraph', innerText: controls.innerText});
+        let anchor = createElement('a', {id: 'attr-anchor', href: controls.href});
+        let img = createElement('img', {id: 'attr-img', src: controls.src});
+        let input = createElement('input', {id: 'attr-input', type: 'text', value: controls.value});
+        let span = createElement('span', {id: 'attr-span', innerHTML: controls.innerHTML});
+
+        appendTo(div, [paragraph, anchor, img, input, span]);
+        appendToBody(div);
+    })();
+
     let attrElem = _('#attr');
     let attrElemNode = document.querySelector('#attr');
 

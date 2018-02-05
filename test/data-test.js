@@ -3,6 +3,18 @@
  **/
 
 describe('Data Manager', () => {
+    // data setup
+    (() => {
+        let div = createElement('div', {id: 'data'});
+        div.setAttribute('data-' + controls.dataAttr, controls.dataValue);
+
+        let div2 = createElement('div', {id: 'data2'});
+        div2.setAttribute('data-' + controls.dataAttr, controls.dataValue);
+
+        appendToBody(div);
+        appendToBody(div2);
+    })();
+
     let dataElem = _('#data');
 
     it('should return the value of data-* attribute', () => {

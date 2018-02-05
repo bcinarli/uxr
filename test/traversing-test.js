@@ -3,6 +3,21 @@
  **/
 
 describe('Traversing', () => {
+    // traversing setup
+    (() => {
+        let div = createElement('div', {id: 'traversing'});
+        let ul = createElement('ul', {id: 'traversing-list'});
+
+        ['apple', 'banana', 'strawberry'].forEach(fruit => {
+            let f = createElement('li', {innerText: fruit, classList: [fruit]});
+
+            appendTo(ul, f);
+        });
+
+        appendTo(div, ul);
+        appendToBody(div);
+    })();
+
     let traversingList = _('#traversing-list li');
 
     describe('Closest', () => {

@@ -3,6 +3,24 @@
  **/
 
 describe('Dimensions', () => {
+    // dimensions setup
+    (() => {
+        let div = createElement('div', {id: 'dimensions'});
+        let widthTest = createElement('div', {id: 'dim-width', innerText: 'Hello World'});
+        let widthTest2 = createElement('div', {
+            id: 'dim-width2',
+            innerText: 'Hello World',
+            style: {width: '50%', padding: '10px', border: '5px solid'}
+        });
+        let widthTest3 = createElement('ul', {id: 'dim-width3'});
+        let widthTest3Li = createElement('li', {style: {width: '500px', padding: '5px', margin: '10px'}});
+        let widthTest3Li2 = createElement('li');
+
+        appendTo(div, [widthTest, widthTest2, appendTo(widthTest3, [widthTest3Li, widthTest3Li2])]);
+
+        appendToBody(div);
+    })();
+
     describe('Width', () => {
         it('should return the first elements content width without padding', () => {
             let width = _('#dim-width3 li').width();

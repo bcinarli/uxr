@@ -3,6 +3,14 @@
  **/
 
 describe('CSS Classes', () => {
+    // css-classes setup
+    (() => {
+        let div = createElement('div', {id: 'css-classes'});
+        div.classList.add(controls.className);
+
+        appendToBody(div);
+    })();
+
     let cssElem = _('#css-classes');
     let cssElemNode = document.querySelector('#css-classes');
     let noneElem = _([1,2,3]);

@@ -3,6 +3,20 @@
  **/
 
 describe('Event Manager', () => {
+    // event test
+    (() => {
+        let div = createElement('div', {id: 'event'});
+        let input = createElement('input', {id: 'event-input', type: 'text'});
+        let p = createElement('p', {
+            id: 'event-paragraph',
+            innerHTML: '<a class="event-link" href="#" data-trigger="child-element">test</a>' +
+            '<a class="event-link2" href="#" data-trigger="child-element2">test</a>'
+        });
+
+        appendTo(div, [input, p]);
+        appendToBody(div);
+    })();
+
     let inputElem = _('#event-input');
     let paragraphElem = _('#event-paragraph');
 
