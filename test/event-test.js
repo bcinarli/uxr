@@ -105,8 +105,6 @@ describe('Event Manager', () => {
             // if you send handler, it only removes the handler but event type stays in element object
             paragraphElem.off('click', '.event-link', handler);
 
-            console.log(paragraphElem.find('.event-link')[0].uxrAttachedEvents['click']);
-
             expect(paragraphElem.find('.event-link')[0].uxrAttachedEvents['click']).to.be.empty;
         });
 
