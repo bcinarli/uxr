@@ -19,8 +19,15 @@ install:
   - yarn
 
 script:
-  yarn run ci
+  - yarn run ci
+  - bundle exec rspec
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 after_success:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
   - cat ./coverage/coverage-final.json | node_modules/codecov.io/bin/codecov.io.js
   - rm -rf ./coverage
