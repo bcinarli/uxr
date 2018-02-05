@@ -9,23 +9,23 @@ const contentSize = ({stack, type, newSize}) => {
     let styleFirst = type === 'width' ? 'paddingLeft' : 'paddingTop';
     let styleLast = type === 'width' ? 'paddingRight' : 'paddingBottom';
 
-    if (stack.length > 0) {
-        if (newSize) {
-            stack.el.forEach(item => item.style[type] = newSize);
-
-            return stack;
-        }
-
-        else {
-            let el = stack.el[0];
-
-            return el[client]
-                - removeUnit(el.style[styleFirst])
-                - removeUnit(el.style[styleLast]);
-        }
+    if (stack.length === 0) {
+        return false;
     }
 
-    return false;
+    if (newSize) {
+        stack.el.forEach(item => item.style[type] = newSize);
+
+        return stack;
+    }
+
+    else {
+        let el = stack.el[0];
+
+        return el[client]
+            - removeUnit(el.style[styleFirst])
+            - removeUnit(el.style[styleLast]);
+    }
 };
 
 const clientSize = ({stack, type}) => {
@@ -33,24 +33,21 @@ const clientSize = ({stack, type}) => {
 };
 
 const offsetSize = ({stack, type, margins}) => {
-    let vars = {
-        styleFirst: margins ? 'marginLeft' : 'marginTop',
-        styleLast: margins ? 'marginRight' : 'marginBottom'
-    };
+    let styleFirst = margins ? 'marginLeft' : 'marginTop';
+    let styleLast = margins ? 'marginRight' : 'marginBottom';
 
-    if (stack.length > 0) {
-        let el = stack.el[0];
-        let sizeType = el[type];
-
-        if (margins) {
-            sizeType += removeUnit(el.style[vars.styleFirst])
-                + removeUnit(el.style[vars.styleLast]);
-        }
-
-        return sizeType;
+    if (stack.length === 0) {
+        return false;
     }
 
-    return false;
+    let el = stack.el[0];
+    let sizeType = el[type];
+
+    if (margins) {
+        sizeType += removeUnit(el.style[styleFirst]) + removeUnit(el.style[styleLast]);
+    }
+
+    return sizeType;
 };
 
 _.extend.contentWidth = _.extend.width = function (newWidth) {
