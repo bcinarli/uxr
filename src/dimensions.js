@@ -5,11 +5,9 @@
 /* global removeUnit */
 
 const contentSize = ({stack, type, newSize}) => {
-    let vars = {
-        client: type === 'width' ? 'clientWidth' : 'clientHeight',
-        styleFirst: type === 'width' ? 'paddingLeft' : 'paddingTop',
-        styleLast: type === 'width' ? 'paddingRight' : 'paddingBottom'
-    };
+    let client = type === 'width' ? 'clientWidth' : 'clientHeight';
+    let styleFirst = type === 'width' ? 'paddingLeft' : 'paddingTop';
+    let styleLast = type === 'width' ? 'paddingRight' : 'paddingBottom';
 
     if (stack.length > 0) {
         if (newSize) {
@@ -21,9 +19,9 @@ const contentSize = ({stack, type, newSize}) => {
         else {
             let el = stack.el[0];
 
-            return el[vars.client]
-                - removeUnit(el.style[vars.styleFirst])
-                - removeUnit(el.style[vars.styleLast]);
+            return el[client]
+                - removeUnit(el.style[styleFirst])
+                - removeUnit(el.style[styleLast]);
         }
     }
 
