@@ -360,6 +360,19 @@ el.outerHeight(true);
 el.offsetHeight(true); // alias method
 ```
 
+### Cloning
+Clone methods, clones the nodes in a UXR object. 
+
+``` js
+let el = uxr(selector);
+
+// clones the all elements in uxr object
+let clone = el.clone();
+
+// deep clones (child elements and inner contents) the all elements in uxr object
+let cloneDeep = el.clone(true);
+```
+
 [npm]: https://img.shields.io/npm/v/uxr.svg
 [npm-url]: https://npmjs.com/package/uxr
 

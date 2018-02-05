@@ -47,7 +47,9 @@ _.extend.init.prototype = _.extend;
 
 _.extend.attr = function (attr, value) {
     if (value) {
-        return this.el.forEach(item => item[attr] = value);
+        this.el.forEach(item => item[attr] = value);
+
+        return this;
     }
 
     return this.el[0][attr];
@@ -71,6 +73,17 @@ _.extend.href = function (url) {
 
 _.extend.value = function (value) {
     return this.attr('value', value);
+};
+/**
+ * clone
+ **/
+
+/* global mutated */
+
+_.extend.clone = function (deep = false) {
+    let newStack = this.el.map(item => item.cloneNode(deep));
+
+    return mutated(this, newStack);
 };
 /**
  * css-classes
@@ -116,40 +129,62 @@ _.extend.toggleClass = function (className) {
 /* global toDomString */
 /* global isObject */
 
-_.extend.css = function (prop, value) {
+const maybePropIsObject = prop => {
     let properties = [];
-    let values = value ? [value] : [];
-    let list = {};
+    let values = [];
 
-    if (typeof prop === 'string') {
-        properties = [toDomString(prop)];
-    }
-
-    else if (isObject(prop)) {
+    if (isObject(prop)) {
         Object.keys(prop).forEach(p => {
             properties.push(toDomString(p));
             values.push(prop[p]);
         });
+        return {properties, values};
     }
 
-    else if (Array.isArray(prop)) {
-        properties = prop.map(p => toDomString(p));
+    return false;
+};
+
+const setProps = (props) => {
+    if (typeof props === 'string') {
+        return [toDomString(props)];
     }
 
-    if (values.length > 0) {
-        return this.el.map(item => properties.forEach((p, i) => item.style[p] = values[i]));
+    if (Array.isArray(props)) {
+        return props.map(p => toDomString(p));
+    }
+};
+
+const getStyles = (el, props) => {
+    let list = {};
+
+    props.forEach(prop => {
+        list[prop] = el.style[prop];
+    });
+
+    return props.length === 1 ? list[props[0]] : list;
+};
+
+
+_.extend.css = function (prop, value) {
+    let options = {
+        properties: [],
+        values: value ? [value] : []
+    };
+
+    options.properties = setProps(prop);
+
+    // if the prop is object for set of prop/value pair
+    options = maybePropIsObject(prop) || options;
+
+    if (options.values.length > 0) {
+        this.el.map(item => options.properties.forEach((p, i) => item.style[p] = options.values[i]));
+
+        return this;
     }
 
-    if (properties.length > 1) {
-        properties.forEach(prop => {
-            list[prop] = this.el[0].style[prop];
-        });
-    }
-    else {
-        list = this.el[0].style[properties[0]];
-    }
-
-    return list;
+    // if no value set then we are asking for getting the values of properties
+    // this breaks the chaining
+    return getStyles(this.el[0], options.properties);
 };
 /**
  * data
@@ -166,9 +201,7 @@ _.extend.data = function (name, value) {
         return this;
     }
 
-    else {
-        return item.dataset[domName];
-    }
+    return item.dataset[domName];
 };
 /**
  * dimensions
@@ -176,70 +209,68 @@ _.extend.data = function (name, value) {
 
 /* global removeUnit */
 
-_.extend.contentWidth = _.extend.width = function (newWidth) {
-    if (this.length > 0) {
-        if (newWidth) {
-            this.el.forEach(item => item.style.width = newWidth);
-            return this;
-        }
+const contentSize = ({stack, type, newSize}) => {
+    let client = type === 'width' ? 'clientWidth' : 'clientHeight';
+    let styleFirst = type === 'width' ? 'paddingLeft' : 'paddingTop';
+    let styleLast = type === 'width' ? 'paddingRight' : 'paddingBottom';
 
-        else {
-            return this.el[0].clientWidth - removeUnit(this.el[0].style.paddingLeft) - removeUnit(this.el[0].style.paddingRight);
-        }
+    if (stack.length === 0) {
+        return false;
     }
 
-    return false;
+    if (newSize) {
+        stack.el.forEach(item => item.style[type] = newSize);
+
+        return stack;
+    }
+
+    return stack.el[0][client] - removeUnit(stack.el[0].style[styleFirst]) - removeUnit(stack.el[0].style[styleLast]);
+};
+
+const clientSize = ({stack, type}) => {
+    return stack.length > 0 ? stack.el[0][type] : false;
+};
+
+const offsetSize = ({stack, type, margins}) => {
+    let styleFirst = margins ? 'marginLeft' : 'marginTop';
+    let styleLast = margins ? 'marginRight' : 'marginBottom';
+
+    if (stack.length === 0) {
+        return false;
+    }
+
+    let el = stack.el[0];
+    let sizeType = el[type];
+
+    if (margins) {
+        sizeType += removeUnit(el.style[styleFirst]) + removeUnit(el.style[styleLast]);
+    }
+
+    return sizeType;
+};
+
+_.extend.contentWidth = _.extend.width = function (newWidth) {
+    return contentSize({stack: this, type: 'width', newSize: newWidth});
 };
 
 _.extend.clientWidth = _.extend.innerWidth = function () {
-    return this.length > 0 ? this.el[0].clientWidth : false;
+    return clientSize({stack: this, type: 'clientWidth'});
 };
 
 _.extend.offsetWidth = _.extend.outerWidth = function (includeMargins = false) {
-    if (this.length > 0) {
-        let outerWidth = this.el[0].offsetWidth;
-
-        if (includeMargins) {
-            outerWidth += removeUnit(this.el[0].style.marginLeft) + removeUnit(this.el[0].style.marginRight);
-        }
-
-        return outerWidth;
-    }
-
-    return false;
+    return offsetSize({stack: this, type: 'offsetWidth', margins: includeMargins});
 };
 
 _.extend.contentHeight = _.extend.height = function (newHeight) {
-    if (this.length > 0) {
-        if (newHeight) {
-            this.el.forEach(item => item.style.height = newHeight);
-            return this;
-        }
-
-        else {
-            return this.el[0].clientHeight - removeUnit(this.el[0].style.paddingTop) - removeUnit(this.el[0].style.paddingBottom);
-        }
-    }
-
-    return false;
+    return contentSize({stack: this, type: 'height', newSize: newHeight});
 };
 
 _.extend.clientHeight = _.extend.innerHeight = function () {
-    return this.length > 0 ? this.el[0].clientHeight : false;
+    return clientSize({stack: this, type: 'clientHeight'});
 };
 
 _.extend.offsetHeight = _.extend.outerHeight = function (includeMargins = false) {
-    if (this.length > 0) {
-        let outerHeight = this.el[0].offsetHeight;
-
-        if (includeMargins) {
-            outerHeight += removeUnit(this.el[0].style.marginTop) + removeUnit(this.el[0].style.marginBottom);
-        }
-
-        return outerHeight;
-    }
-
-    return false;
+    return offsetSize({stack: this, type: 'offsetHeight', margins: includeMargins});
 };
 /**
  * end
@@ -255,17 +286,20 @@ _.extend.end = function () {
 /* global hashCode */
 /* global maybeMultiple */
 
+const removeEventFromItem = (item, event, fn) => {
+    item.removeEventListener(event, item.uxrAttachedEvents[event][fn]);
+    delete item.uxrAttachedEvents[event][fn];
+
+    return item;
+};
+
 _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
     let stack = this;
     let handler = eventHandlerOrSelector;
     let events = maybeMultiple(eventName);
 
-    if (typeof eventHandlerOrSelector === 'string') {
-        handler = eventHandler;
-        stack = this.find(eventHandlerOrSelector);
-    }
-
-    if (typeof eventHandler !== 'undefined') {
+    if (typeof eventHandlerOrSelector === 'string'
+        || typeof eventHandler !== 'undefined') {
         handler = eventHandler;
         stack = this.find(eventHandlerOrSelector);
     }
@@ -275,21 +309,17 @@ _.extend.off = function (eventName, eventHandlerOrSelector, eventHandler) {
 
         events.forEach(event => {
             // make sure not to give an error, if user tried to remove unattached event
-            if (typeof item.uxrAttachedEvents[event] === 'undefined') {
-                return;
-            }
+            if (typeof item.uxrAttachedEvents[event] !== 'undefined') {
+                if (typeof handler === 'undefined') {
+                    Object.keys(item.uxrAttachedEvents[event]).forEach(fn => {
+                        removeEventFromItem(item, event, fn);
+                    });
+                }
 
-            else if (typeof handler === 'undefined') {
-                Object.keys(item.uxrAttachedEvents[event]).forEach(fn => {
-                    item.removeEventListener(event, item.uxrAttachedEvents[event][fn]);
-                    delete item.uxrAttachedEvents[event];
-                });
-            }
-
-            else {
-                let hash = hashCode((handler).toString());
-                item.removeEventListener(event, item.uxrAttachedEvents[event][hash]);
-                delete item.uxrAttachedEvents[event][hash];
+                else {
+                    let hash = hashCode((handler).toString());
+                    removeEventFromItem(item, event, hash);
+                }
             }
         });
     });
@@ -384,36 +414,50 @@ _.extend.find = function (criteria) {
 /* global insertBefore */
 
 _.extend.empty = function () {
-    return this.el.forEach(item => item.innerHTML = '');
+    this.el.forEach(item => item.innerHTML = '');
+
+    return this;
 };
 
 _.extend.remove = function () {
-    return this.el.forEach(item => item.parentNode.removeChild(item));
+    this.el.forEach(item => item.parentNode.removeChild(item));
+
+    return this;
 };
 
 _.extend.append = function (stringOrObject) {
-    return this.el.forEach(item => item.appendChild(getInsertableElement(stringOrObject)));
+    this.el.forEach(item => item.appendChild(getInsertableElement(stringOrObject)));
+
+    return this;
 };
 
 _.extend.prepend = function (stringOrObject) {
-    return this.el.forEach(
+    this.el.forEach(
         item => insertBefore(stringOrObject, item, 'firstChild', false));
+
+    return this;
 };
 
 _.extend.after = function (stringOrObject) {
-    return this.el.forEach(
+    this.el.forEach(
         item => insertBefore(stringOrObject, item, 'nextSibling', true));
+
+    return this;
 };
 
 _.extend.before = function (stringOrObject) {
-    return this.el.forEach(
+    this.el.forEach(
         item => insertBefore(stringOrObject, item, 'self', true));
+
+    return this;
 };
 
 _.extend.replaceWith = function (stringOrObject) {
-    return this.el.map(
+    this.el.map(
         item => item.parentNode.replaceChild(getInsertableElement(stringOrObject), item)
     );
+
+    return this;
 };
 /**
  * ready
@@ -431,6 +475,10 @@ _.ready = function (fn) {
  **/
 
 /* global mutated */
+
+const mapAndFilter = ({stack, map, filter}) => {
+    return stack.el.map(item => item[map]).filter(item => filter ? item.matches(filter) : item);
+};
 
 _.extend.closest = function (selector) {
     let el = this.el[0];
@@ -453,8 +501,7 @@ _.extend.closest = function (selector) {
 _.extend.parent = function (selector) {
     return mutated(
         this,
-        this.el.map(item => item.parentNode)
-            .filter(item => selector ? item.matches(selector) : item));
+        mapAndFilter({stack: this, map: 'parentNode', filter: selector}));
 };
 
 _.extend.children = function (selector) {
@@ -478,14 +525,12 @@ _.extend.siblings = function (selector) {
 _.extend.next = function (selector) {
     return mutated(
         this,
-        this.el.map(item => item.nextElementSibling)
-            .filter(item => selector ? item.matches(selector) : item));
+        mapAndFilter({stack: this, map: 'nextElementSibling', filter: selector}));
 };
 
 _.extend.prev = function (selector) {
     return mutated(this,
-        this.el.map(item => item.previousElementSibling)
-            .filter(item => selector ? item.matches(selector) : item));
+        mapAndFilter({stack: this, map: 'previousElementSibling', filter: selector}));
 };
 
 _.extend.first = function () {
@@ -544,7 +589,9 @@ const getInsertableElement = s => {
     let insertableElement = elementFromString(s);
 
     if (insertableElement instanceof uxr) {
-        insertableElement = insertableElement.el[0];
+        let template = document.createElement('template');
+        insertableElement.el.forEach(item => template.content.appendChild(item));
+        insertableElement = template.content;
     }
 
     return insertableElement;
@@ -653,5 +700,5 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
-_.uxr = { version: '0.5.0' };
+_.uxr = { version: '0.6.0' };
 })();
