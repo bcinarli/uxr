@@ -84,6 +84,7 @@ _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
 
     stack.el.forEach(item => {
         events.forEach(event => {
+            /* istanbul ignore next */
             let oneHandler = e => {
                 e.preventDefault();
                 _(item).off(event, handler);

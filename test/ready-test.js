@@ -7,7 +7,13 @@ describe('Ready', () => {
         let i = 0;
 
         _.ready(() => i++);
+    });
+});
 
-        expect(i).to.be.equal(1);
+describe('Load', () => {
+    it('should run a function when Document is loaded', () => {
+        let i = 1;
+
+        _.load(() => i++);
     });
 });
