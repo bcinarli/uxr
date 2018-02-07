@@ -4,10 +4,14 @@
 
 /* global mutated */
 
-_.extend.filter = function (criteria) {
-    return mutated(this, this.el.filter(item => item.matches(criteria)));
+_.extend.filter = function (selector) {
+    return mutated(this, this.el.filter(item => item.matches(selector)));
 };
 
-_.extend.find = function (criteria) {
-    return mutated(this, this.el[0].querySelectorAll(criteria));
+_.extend.find = _.extend.has = function (selector) {
+    return mutated(this, this.el.map(item => [...item.querySelectorAll(selector)]).reduce((acc, cur) => acc.concat(cur), []));
+};
+
+_.extend.not = function (selector) {
+    return mutated(this, this.el.filter(item => !item.matches(selector)));
 };
