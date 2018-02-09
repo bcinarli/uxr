@@ -4,8 +4,12 @@
 
 /* global mutated */
 
-const mapAndFilter = ({stack, map, filter}) => {
-    return stack.el.map(item => item[map]).filter(item => filter ? item.matches(filter) : item);
+const _mapFilterAndMutate = map => {
+    return function (selector) {
+        return mutated(
+            this,
+            this.el.map(item => item[map]).filter(item => selector ? item.matches(selector) : item));
+    };
 };
 
 _.extend.closest = function (selector) {
@@ -26,11 +30,7 @@ _.extend.closest = function (selector) {
     return mutated(this, []);
 };
 
-_.extend.parent = function (selector) {
-    return mutated(
-        this,
-        mapAndFilter({stack: this, map: 'parentNode', filter: selector}));
-};
+_.extend.parent = _mapFilterAndMutate('parentNode');
 
 _.extend.children = function (selector) {
     return mutated(
@@ -50,16 +50,9 @@ _.extend.siblings = function (selector) {
             .filter(item => selector ? item.matches(selector) : item));
 };
 
-_.extend.next = function (selector) {
-    return mutated(
-        this,
-        mapAndFilter({stack: this, map: 'nextElementSibling', filter: selector}));
-};
+_.extend.next = _mapFilterAndMutate('nextElementSibling');
 
-_.extend.prev = function (selector) {
-    return mutated(this,
-        mapAndFilter({stack: this, map: 'previousElementSibling', filter: selector}));
-};
+_.extend.prev = _mapFilterAndMutate('previousElementSibling');
 
 _.extend.first = function () {
     return mutated(this, this.el.filter((item, index) => index === 0));
