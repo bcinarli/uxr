@@ -2,20 +2,18 @@
  * ready
  **/
 
-/* istanbul ignore next */
-_.ready = function (fn) {
-    document.addEventListener('readystatechange', (e) => {
-        if(e.target.readyState === 'interactive') {
-            fn();
-        }
-    });
+const _stateChange = (condition) => {
+    return fn => {
+        return document.addEventListener('readystatechange', e => {
+            if (e.target.readyState === condition) {
+                fn();
+            }
+        });
+    };
 };
 
 /* istanbul ignore next */
-_.load = function(fn) {
-    document.addEventListener('readystatechange', (e) => {
-        if(e.target.readyState === 'complete') {
-            fn();
-        }
-    });
-};
+_.ready = _stateChange('interactive');
+
+/* istanbul ignore next */
+_.load = _stateChange('complete');
