@@ -4,12 +4,16 @@
 
 /* global removeUnit */
 
+const _getContentSize = (el, type) => {
+    let client = type === 'width' ? 'clientWidth' : 'clientHeight';
+    let styleFirst = type === 'width' ? 'paddingLeft' : 'paddingTop';
+    let styleLast = type === 'width' ? 'paddingRight' : 'paddingBottom';
+
+    return el[client] - removeUnit(el.style[styleFirst]) - removeUnit(el.style[styleLast]);
+};
+
 const _contentSize = type => {
     return function (newSize) {
-        let client = type === 'width' ? 'clientWidth' : 'clientHeight';
-        let styleFirst = type === 'width' ? 'paddingLeft' : 'paddingTop';
-        let styleLast = type === 'width' ? 'paddingRight' : 'paddingBottom';
-
         if (this.length === 0) {
             return false;
         }
@@ -20,7 +24,7 @@ const _contentSize = type => {
             return this;
         }
 
-        return this.el[0][client] - removeUnit(this.el[0].style[styleFirst]) - removeUnit(this.el[0].style[styleLast]);
+        return _getContentSize(this.el[0], type);
     };
 };
 
@@ -30,10 +34,15 @@ const _clientSize = type => {
     };
 };
 
+const _getMarginSize = (el, type) => {
+    let styleFirst = type === 'offsetWidth' ? 'marginLeft' : 'marginTop';
+    let styleLast = type === 'offsetHeight' ? 'marginRight' : 'marginBottom';
+
+    return removeUnit(el.style[styleFirst]) + removeUnit(el.style[styleLast]);
+};
+
 const _offsetSize = type => {
     return function (includeMargins = false) {
-        let styleFirst = includeMargins ? 'marginLeft' : 'marginTop';
-        let styleLast = includeMargins ? 'marginRight' : 'marginBottom';
 
         if (this.length === 0) {
             return false;
@@ -43,7 +52,7 @@ const _offsetSize = type => {
         let sizeType = el[type];
 
         if (includeMargins) {
-            sizeType += removeUnit(el.style[styleFirst]) + removeUnit(el.style[styleLast]);
+            sizeType += _getMarginSize(el, type);
         }
 
         return sizeType;
