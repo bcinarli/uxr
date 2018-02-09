@@ -2,6 +2,7 @@
  * ready
  **/
 
+/* istanbul ignore next */
 const _stateChange = (condition) => {
     return fn => {
         return document.addEventListener('readystatechange', e => {
@@ -12,8 +13,6 @@ const _stateChange = (condition) => {
     };
 };
 
-/* istanbul ignore next */
 _.ready = _stateChange('interactive');
 
-/* istanbul ignore next */
 _.load = _stateChange('complete');

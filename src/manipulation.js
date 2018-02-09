@@ -5,6 +5,15 @@
 /* global getInsertableElement */
 /* global insertBefore */
 
+const _insert = ({where, parent}) => {
+    return function(stringOrObject) {
+        this.el.forEach(
+            item => insertBefore(stringOrObject, item, where, parent));
+
+        return this;
+    };
+};
+
 _.extend.empty = function () {
     this.el.forEach(item => item.innerHTML = '');
 
@@ -23,26 +32,11 @@ _.extend.append = function (stringOrObject) {
     return this;
 };
 
-_.extend.prepend = function (stringOrObject) {
-    this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'firstChild', false));
+_.extend.prepend = _insert({where: 'firstChild', parent: false});
 
-    return this;
-};
+_.extend.after = _insert({where: 'nextSibling', parent: true});
 
-_.extend.after = function (stringOrObject) {
-    this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'nextSibling', true));
-
-    return this;
-};
-
-_.extend.before = function (stringOrObject) {
-    this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'self', true));
-
-    return this;
-};
+_.extend.before = _insert({where: 'self', parent: true});
 
 _.extend.replaceWith = function (stringOrObject) {
     this.el.map(
