@@ -5,19 +5,21 @@
 /* global normalizeClassName */
 /* global maybeMultiple */
 
-const _class = function (stack, className, type) {
-    stack.el[0].nodeType === 1 && stack.el.forEach(item => maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
+const _class = type => {
+    return function (className) {
+        this.el.forEach(item => {
+            if (item.nodeType === 1) {
+                maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className)));
+            }
+        });
 
-    return stack;
+        return this;
+    };
 };
 
-_.extend.addClass = function (className) {
-    return _class(this, className, 'add');
-};
+_.extend.addClass = _class('add');
 
-_.extend.removeClass = function (className) {
-    return _class(this, className, 'remove');
-};
+_.extend.removeClass = _class('remove');
 
 _.extend.hasClass = function (className) {
     return this.el[0].nodeType === 1 && this.filter('.' + normalizeClassName(className)).length > 0;
