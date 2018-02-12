@@ -87,6 +87,8 @@ describe('Event Manager', () => {
             inputElem.attr('value', controls.value);
             inputElem.trigger('change');
 
+            inputElem.off('this-should-be-skipped');
+
             expect(inputElem[0].uxrAttachedEvents['change']).to.be.empty;
             expect(inputElem.attr('value')).to.not.be.equal(value);
         });

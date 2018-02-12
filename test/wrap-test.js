@@ -123,5 +123,13 @@ describe('Element Wrapping', () => {
 
             expect(parent).to.be.equal(newParent);
         });
+
+        it('should remove parent, if after unwrapping it become an empty element', () => {
+            let parent = singleAttr.parent();
+
+            singleAttr.unwrap();
+
+            expect(document.body.contains(parent[0])).to.be.equal(false);
+        });
     });
 });
