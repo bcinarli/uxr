@@ -27,26 +27,6 @@ describe('Event Manager', () => {
         triggered.push(e.currentTarget.dataset.trigger);
     };
 
-    describe('Event Trigger', () => {
-        it('should trigger an event', () => {
-            let counter = 0;
-            paragraphElem.on('click', () => counter++);
-            paragraphElem.trigger('click');
-            paragraphElem.off('click');
-            expect(counter).to.be.equal(1);
-        });
-
-        it('should trigger an event on children elements', () => {
-            let counter = 0;
-            paragraphElem.on('click', '.event-link', () => counter++);
-            paragraphElem.trigger('click'); // no effect
-            paragraphElem.trigger('click', '.event-link');
-            paragraphElem.off('click', '.event-link');
-            paragraphElem.off('click');
-            expect(counter).to.be.equal(1);
-        });
-    });
-
     describe('Add Event', () => {
         it('should add an event', () => {
             inputElem.on('change', e => value = e.currentTarget.value);
@@ -166,6 +146,54 @@ describe('Event Manager', () => {
             paragraphElem.find('.event-link2').trigger('click');
 
             expect(counter).to.not.be.equal(1);
+        });
+    });
+
+    describe('Event Trigger', () => {
+        it('should trigger an event', () => {
+            let counter = 0;
+            paragraphElem.on('click', () => counter++);
+            paragraphElem.trigger('click');
+            paragraphElem.off('click');
+            expect(counter).to.be.equal(1);
+        });
+
+        it('should trigger an event on children elements', () => {
+            let counter = 0;
+            paragraphElem.on('click', '.event-link', () => counter++);
+            paragraphElem.trigger('click'); // no effect
+            paragraphElem.trigger('click', '.event-link');
+            paragraphElem.off('click', '.event-link');
+            paragraphElem.off('click');
+            expect(counter).to.be.equal(1);
+        });
+
+        it('should trigger an event', () => {
+            let counter = 0;
+            let event = {};
+
+            paragraphElem.on('customClick', (e) => {
+                event = e;
+                counter++
+            });
+            paragraphElem.trigger('customClick', {custom: 'params'});
+            paragraphElem.off('customClick');
+            expect(counter).to.be.equal(1);
+            expect(event.detail.custom).to.be.equal('params');
+        });
+
+        it('should trigger an event with params in children elements', () => {
+            let counter = 0;
+            let event = {};
+
+            paragraphElem.on('customClick', '.event-link', (e) => {
+                event = e;
+                counter++
+            });
+            paragraphElem.trigger('customClick', '.event-link', {custom: 'params'});
+            paragraphElem.off('customClick', '.event-link');
+            expect(counter).to.be.equal(1);
+            expect(event.detail.custom).to.be.equal('params');
         });
     });
 });
