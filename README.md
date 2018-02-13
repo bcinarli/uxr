@@ -20,6 +20,15 @@ UXR has the philosophy of fewer code and low file size. Because of this, widely 
 | Version  | 49+  | 36+ | 37+ | 10+ | 12+ |
 
 ## How To Use
+You can install UXR via Node package managers
+``` js
+$ npm install uxr
+// or
+$ yarn add uxr
+```
+
+Or you can directly include you `dist` files to your project after downloading the desired version.
+
 After adding the `dist/uxr.min.js` to your page, you can select an element set from DOM and start to manipulate/modify the selection.
 
 ### Loading UXR methods
@@ -27,10 +36,12 @@ You can define UXR methods to run when page loads and content ready. Or run when
 
 ``` js
 uxr.ready(function(){
-    // inner functions automatically runs when loading finished
-    
+    // inner functions automatically runs when document is ready
 });
 
+uxr.load(function(){
+    // inner functions automatically runs when document is fully loaded
+});
 ```
 
 ### Element Selection
@@ -60,32 +71,54 @@ uxr(selector)
 ```
 
 ### Attribute Manipulation
-
-With `uxr(selector).attr()` methods you can get an attribute's value or set a value
+With `uxr(selector).attr()` methods you can get an attribute's value or set a value in HTML tags
 
 ``` js
 let el = uxr(selector);
 
 // get the ID
 let id = el.attr('id');
+// getAttr method is an alias to attr(name)
+let id = el.getAttr('id');
 
 // set the ID
 el.attr('id', 'new-id');
+// setAttr method is an alias to attr(name, value);
+el.setAttr('id', 'new-id');
 
 // get a data-attr value
 // the following both samples gets the same attribute
 el.attr('data-attr');
 el.attr('dataAttr');
+
+// Remove an attribute from HTML
+el.removeAttr('id');
+el.removeAttribute('id');
 ```
 
 There are some, easy to use - easy to remember attribute methods
 
-* `uxr(selector).text(value)` : if you send the `value` it sets the `innerText` value with the new one. Otherwise returns the `innerText` value. 
-* `uxr(selector).html(value)` : if you send the `value` it sets the `innerHTML` value with the new one. Otherwise returns the `innerHTML` value. 
+
 * `uxr(selector).src(value)` : if you send the `value` it sets the `src` of the element. Otherwise returns the `src` value. 
 * `uxr(selector).href(value)` : if you send the `value` it sets the `href` value of the anchor with the new one. Otherwise returns the `href` value. 
-* `uxr(selector).value(value)` : if you send the `value` it sets the value of form elements with the new one. Otherwise returns the value of the form element. 
 
+### Props
+With `uxr(selector).prop()` methods you can get an DOM node element's properties. This is different than attr methods where it get native elements properties rather than HTML attributes.
+
+``` js
+let el = uxr(selector);
+
+// get a property
+let innerText = el.prop('innerText');
+
+// set a property
+el.prop('innerText', 'New Text');
+```
+
+There are some, easy to use - easy to remember property methods
+* `uxr(selector).text(value)` : if you send the `value` it sets the `innerText` value with the new one. Otherwise returns the `innerText` value. 
+* `uxr(selector).html(value)` : if you send the `value` it sets the `innerHTML` value with the new one. Otherwise returns the `innerHTML` value. 
+* `uxr(selector).value(value)` : if you send the `value` it sets the value of form elements with the new one. Otherwise returns the value of the form element. 
 
 ### Class Manipulation
 With `uxr` it is easier to add/remove or check classes. All for class manipulation methods supports multiple class names separated with space and setting class starting with dot (`.`) 
@@ -168,6 +201,26 @@ Single Run events are only run once then remove itself from the element.
 uxr(selector).once('touchend', e => { console.log('touch ended'); })
 ```
 
+#### Trigger Events
+Native and custom events can be triggered by using trigger method. Similar to event bindings, event trigger can be triggered on children elements. Despite event binding, where you can bind multiple events at once, you can trigger one event at a time.
+
+``` js
+// trigger a click event
+uxr(selector).trigger('click');
+
+// trigger a custom event
+uxr(selector).trigger('custom');
+
+// trigger a focus event in children
+uxr(selector).trigger('focus', 'input[type=text]');
+
+// trigger event with params
+uxr(selector).trigger('click', {custom: 'params', another: {custom: 'paramater'}});
+
+// trigger event with params in children
+uxr(selector).trigger('blur', 'textarea', {custom: 'params', another: {custom: 'paramater'}});
+```
+
 ### Wrapper Methods
 With wrapper methods, you can wrap element or elements to a new parent or unwrap them.
 
@@ -221,6 +274,22 @@ el.prepend(uxr('#new'));
 
 // replaces the element with new one
 el.replaceWith('<div id="replaced">Previous element replaced</div>');
+```
+
+### Filtering and Finding
+Filtering methods help to find or filter elements in a UXR object.
+
+``` js
+// create a subset of elements in a UXR object
+uxr(selector).filter(anotherSelector);
+
+// create a subset of elements that a not matched the selector in a UXR object
+uxr(selector).not(anotherSelector);
+
+// find / select children elements in a UXR object
+// has method is an alias to find
+uxr(selector).find(childrenSelector);
+uxr(selector).has(childrenSelecotr);
 ```
 
 ### Traversing

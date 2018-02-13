@@ -45,22 +45,30 @@ _.extend.init.prototype = _.extend;
  * attr
  **/
 
+/* global toDomString */
+
 _.extend.attr = function (attr, value) {
     if (value) {
-        this.el.forEach(item => item[attr] = value);
-
-        return this;
+        return this.setAttribute(attr, value);
     }
 
-    return this.el[0][attr];
+    return this.getAttr(attr);
 };
 
-_.extend.text = function (txt) {
-    return this.attr('innerText', txt);
+_.extend.setAttr = _.extend.setAttribute = function (attr, value) {
+    this.el.forEach(item => item.setAttribute(toDomString(attr), value));
+
+    return this;
 };
 
-_.extend.html = function (html) {
-    return this.attr('innerHTML', html);
+_.extend.getAttr = _.extend.getAttribute = function (attr) {
+    return this.el[0].getAttribute(toDomString(attr));
+};
+
+_.extend.removeAttr = _.extend.removeAttribute = function (attr) {
+    this.el.forEach(item => item.removeAttribute(toDomString(attr)));
+
+    return this;
 };
 
 _.extend.src = function (url) {
@@ -70,10 +78,6 @@ _.extend.src = function (url) {
 _.extend.href = function (url) {
     return this.attr('href', url);
 };
-
-_.extend.value = function (value) {
-    return this.attr('value', value);
-};
 /**
  * clone
  **/
@@ -81,9 +85,7 @@ _.extend.value = function (value) {
 /* global mutated */
 
 _.extend.clone = function (deep = false) {
-    let newStack = this.el.map(item => item.cloneNode(deep));
-
-    return mutated(this, newStack);
+    return mutated(this, this.el.map(item => item.cloneNode(deep)));
 };
 /**
  * css-classes
@@ -92,19 +94,21 @@ _.extend.clone = function (deep = false) {
 /* global normalizeClassName */
 /* global maybeMultiple */
 
-const _class = function (stack, className, type) {
-    stack.el[0].nodeType === 1 && stack.el.forEach(item => maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className))));
+const _class = type => {
+    return function (className) {
+        this.el.forEach(item => {
+            if (item.nodeType === 1) {
+                maybeMultiple(className).map(className => item.classList[type](normalizeClassName(className)));
+            }
+        });
 
-    return stack;
+        return this;
+    };
 };
 
-_.extend.addClass = function (className) {
-    return _class(this, className, 'add');
-};
+_.extend.addClass = _class('add');
 
-_.extend.removeClass = function (className) {
-    return _class(this, className, 'remove');
-};
+_.extend.removeClass = _class('remove');
 
 _.extend.hasClass = function (className) {
     return this.el[0].nodeType === 1 && this.filter('.' + normalizeClassName(className)).length > 0;
@@ -193,15 +197,14 @@ _.extend.css = function (prop, value) {
 /* global toDomString */
 
 _.extend.data = function (name, value) {
-    let item = this.el[0];
     let domName = toDomString(name);
 
     if (typeof value !== 'undefined') {
-        item.dataset[domName] = value;
+        this.el.forEach(item => item.dataset[domName] = value);
         return this;
     }
 
-    return item.dataset[domName];
+    return this.el[0].dataset[domName];
 };
 /**
  * dimensions
@@ -209,69 +212,68 @@ _.extend.data = function (name, value) {
 
 /* global removeUnit */
 
-const contentSize = ({stack, type, newSize}) => {
+const _getContentSize = (el, type) => {
     let client = type === 'width' ? 'clientWidth' : 'clientHeight';
     let styleFirst = type === 'width' ? 'paddingLeft' : 'paddingTop';
     let styleLast = type === 'width' ? 'paddingRight' : 'paddingBottom';
 
-    if (stack.length === 0) {
-        return false;
-    }
-
-    if (newSize) {
-        stack.el.forEach(item => item.style[type] = newSize);
-
-        return stack;
-    }
-
-    return stack.el[0][client] - removeUnit(stack.el[0].style[styleFirst]) - removeUnit(stack.el[0].style[styleLast]);
+    return el[client] - removeUnit(el.style[styleFirst]) - removeUnit(el.style[styleLast]);
 };
 
-const clientSize = ({stack, type}) => {
-    return stack.length > 0 ? stack.el[0][type] : false;
+const _contentSize = type => {
+    return function (newSize) {
+        if (this.length === 0) {
+            return false;
+        }
+
+        if (newSize) {
+            this.el.forEach(item => item.style[type] = newSize);
+
+            return this;
+        }
+
+        return _getContentSize(this.el[0], type);
+    };
 };
 
-const offsetSize = ({stack, type, margins}) => {
-    let styleFirst = margins ? 'marginLeft' : 'marginTop';
-    let styleLast = margins ? 'marginRight' : 'marginBottom';
-
-    if (stack.length === 0) {
-        return false;
-    }
-
-    let el = stack.el[0];
-    let sizeType = el[type];
-
-    if (margins) {
-        sizeType += removeUnit(el.style[styleFirst]) + removeUnit(el.style[styleLast]);
-    }
-
-    return sizeType;
+const _clientSize = type => {
+    return function () {
+        return this.length > 0 ? this.el[0][type] : false;
+    };
 };
 
-_.extend.contentWidth = _.extend.width = function (newWidth) {
-    return contentSize({stack: this, type: 'width', newSize: newWidth});
+const _getMarginSize = (el, type) => {
+    let styleFirst = type === 'offsetWidth' ? 'marginLeft' : 'marginTop';
+    let styleLast = type === 'offsetHeight' ? 'marginRight' : 'marginBottom';
+
+    return removeUnit(el.style[styleFirst]) + removeUnit(el.style[styleLast]);
 };
 
-_.extend.clientWidth = _.extend.innerWidth = function () {
-    return clientSize({stack: this, type: 'clientWidth'});
+const _offsetSize = type => {
+    return function (includeMargins = false) {
+
+        if (this.length === 0) {
+            return false;
+        }
+
+        let el = this.el[0];
+        let sizeType = el[type];
+
+        if (includeMargins) {
+            sizeType += _getMarginSize(el, type);
+        }
+
+        return sizeType;
+    };
 };
 
-_.extend.offsetWidth = _.extend.outerWidth = function (includeMargins = false) {
-    return offsetSize({stack: this, type: 'offsetWidth', margins: includeMargins});
-};
+_.extend.contentWidth = _.extend.width = _contentSize('width');
+_.extend.clientWidth = _.extend.innerWidth = _clientSize('clientWidth');
+_.extend.offsetWidth = _.extend.outerWidth = _offsetSize('offsetWidth');
 
-_.extend.contentHeight = _.extend.height = function (newHeight) {
-    return contentSize({stack: this, type: 'height', newSize: newHeight});
-};
-
-_.extend.clientHeight = _.extend.innerHeight = function () {
-    return clientSize({stack: this, type: 'clientHeight'});
-};
-
-_.extend.offsetHeight = _.extend.outerHeight = function (includeMargins = false) {
-    return offsetSize({stack: this, type: 'offsetHeight', margins: includeMargins});
-};
+_.extend.contentHeight = _.extend.height = _contentSize('height');
+_.extend.clientHeight = _.extend.innerHeight = _clientSize('clientHeight');
+_.extend.offsetHeight = _.extend.outerHeight = _offsetSize('offsetHeight');
 /**
  * end
  **/
@@ -285,6 +287,24 @@ _.extend.end = function () {
 
 /* global hashCode */
 /* global maybeMultiple */
+/* global isObject */
+
+/*const events = {
+    animation: ['animationend', 'animationiteration', 'animationstart'],
+    drag: ['drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart', 'drop'],
+    frame: ['abort', 'beforeunload', 'error', 'hashchange', 'load', 'pageshow', 'pagehide', 'resize', 'scroll', 'unload'],
+    form: ['blur', 'change', 'focus', 'focusin', 'focusout', 'input', 'invalid', 'reset', 'search', 'select', 'submit'],
+    keyboard: ['keydown', 'keypress', 'keyup'],
+    media: ['abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'ended', 'error', 'loadeddata', 'loadedmetadata', 'loadstart', 'pause', 'play', 'progress', 'ratechange', 'seeked', 'seeking', 'stalled', 'suspend', 'timeupdate', 'volumechange', 'waiting'],
+    misc: ['message', 'mousewheel', 'online', 'offline', 'popstate', 'show', 'storage', 'toggle', 'wheel'],
+    mouse: ['click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup'],
+    print: ['afterprint', 'beforeprint'],
+    server: ['error', 'message', 'open'],
+    transition: ['transitionend'],
+    touch: ['touchcancel', 'touchend', 'touchmove', 'touchstart']
+};
+
+const allEvents = Object.keys(events).reduce((acc, cur) => acc.concat(events[cur]), []);*/
 
 const removeEventFromItem = (item, event, fn) => {
     item.removeEventListener(event, item.uxrAttachedEvents[event][fn]);
@@ -365,6 +385,7 @@ _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
 
     stack.el.forEach(item => {
         events.forEach(event => {
+            /* istanbul ignore next */
             let oneHandler = e => {
                 e.preventDefault();
                 _(item).off(event, handler);
@@ -379,19 +400,44 @@ _.extend.once = function (eventName, eventHandlerOrSelector, eventHandler) {
     return this;
 };
 
-_.extend.trigger = function (eventName, selector) {
+_.extend.trigger = function (eventName, eventParamsOrSelector, eventParams) {
     let stack = this;
-    let event = document.createEvent('HTMLEvents');
+    let event;
 
-    event.initEvent(eventName, true, true);
+    if (eventParamsOrSelector !== 'undefined' && typeof eventParamsOrSelector === 'string') {
+        stack = this.find(eventParamsOrSelector);
+    }
 
-    if (typeof selector !== 'undefined') {
-        stack = this.find(selector);
+    if (!_eventHasParams(eventParamsOrSelector, eventParams)) {
+        event = getNativeEvent(eventName);
+    }
+
+    else {
+        event = getCustomEvent(eventName, eventParamsOrSelector, eventParams);
     }
 
     stack.el.forEach(item => item.dispatchEvent(event));
 
     return this;
+};
+
+const _eventHasParams = (eventParamsOrSelector, eventParams) => {
+    return (typeof eventParamsOrSelector !== 'undefined' && isObject(eventParamsOrSelector)) || typeof eventParams !== 'undefined';
+};
+
+const getNativeEvent = (eventName) => {
+    return new Event(eventName);
+};
+
+const getCustomEvent = (eventName, eventParamsOrSelector, eventParams) => {
+    let params = eventParams;
+
+    if (typeof eventParamsOrSelector !== 'undefined'
+        && isObject(eventParamsOrSelector)) {
+        params = eventParamsOrSelector;
+    }
+
+    return new CustomEvent(eventName, {detail: params});
 };
 /**
  * filter
@@ -399,12 +445,16 @@ _.extend.trigger = function (eventName, selector) {
 
 /* global mutated */
 
-_.extend.filter = function (criteria) {
-    return mutated(this, this.el.filter(item => item.matches(criteria)));
+_.extend.filter = function (selector) {
+    return mutated(this, this.el.filter(item => item.matches(selector)));
 };
 
-_.extend.find = function (criteria) {
-    return mutated(this, this.el[0].querySelectorAll(criteria));
+_.extend.find = _.extend.has = function (selector) {
+    return mutated(this, this.el.map(item => [...item.querySelectorAll(selector)]).reduce((acc, cur) => acc.concat(cur), []));
+};
+
+_.extend.not = function (selector) {
+    return mutated(this, this.el.filter(item => !item.matches(selector)));
 };
 /**
  * manipulation
@@ -412,6 +462,15 @@ _.extend.find = function (criteria) {
 
 /* global getInsertableElement */
 /* global insertBefore */
+
+const _insert = ({where, parent}) => {
+    return function(stringOrObject) {
+        this.el.forEach(
+            item => insertBefore(stringOrObject, item, where, parent));
+
+        return this;
+    };
+};
 
 _.extend.empty = function () {
     this.el.forEach(item => item.innerHTML = '');
@@ -431,26 +490,11 @@ _.extend.append = function (stringOrObject) {
     return this;
 };
 
-_.extend.prepend = function (stringOrObject) {
-    this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'firstChild', false));
+_.extend.prepend = _insert({where: 'firstChild', parent: false});
 
-    return this;
-};
+_.extend.after = _insert({where: 'nextSibling', parent: true});
 
-_.extend.after = function (stringOrObject) {
-    this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'nextSibling', true));
-
-    return this;
-};
-
-_.extend.before = function (stringOrObject) {
-    this.el.forEach(
-        item => insertBefore(stringOrObject, item, 'self', true));
-
-    return this;
-};
+_.extend.before = _insert({where: 'self', parent: true});
 
 _.extend.replaceWith = function (stringOrObject) {
     this.el.map(
@@ -460,24 +504,68 @@ _.extend.replaceWith = function (stringOrObject) {
     return this;
 };
 /**
+ * prop
+ **/
+
+_.extend.prop = function (prop, value) {
+    if (value) {
+        return this.setProp(prop, value);
+    }
+
+    return this.getProp(prop);
+};
+
+_.extend.setProp = function (prop, value) {
+    this.el.forEach(item => item[prop] = value);
+
+    return this;
+};
+
+_.extend.getProp = function (prop) {
+    return this[0][prop];
+};
+
+_.extend.text = function (txt) {
+    return this.prop('innerText', txt);
+};
+
+_.extend.html = function (html) {
+    return this.prop('innerHTML', html);
+};
+
+_.extend.value = function (value) {
+    return this.prop('value', value);
+};
+/**
  * ready
  **/
 
-_.ready = function (fn) {
-    if (document.readyState !== 'loading') {
-        fn();
-    } else {
-        document.addEventListener('DOMContentLoaded', fn);
-    }
+/* istanbul ignore next */
+const _stateChange = (condition) => {
+    return fn => {
+        return document.addEventListener('readystatechange', e => {
+            if (e.target.readyState === condition) {
+                fn();
+            }
+        });
+    };
 };
+
+_.ready = _stateChange('interactive');
+
+_.load = _stateChange('complete');
 /**
  * traversing
  **/
 
 /* global mutated */
 
-const mapAndFilter = ({stack, map, filter}) => {
-    return stack.el.map(item => item[map]).filter(item => filter ? item.matches(filter) : item);
+const _mapFilterAndMutate = map => {
+    return function (selector) {
+        return mutated(
+            this,
+            this.el.map(item => item[map]).filter(item => selector ? item.matches(selector) : item));
+    };
 };
 
 _.extend.closest = function (selector) {
@@ -498,11 +586,7 @@ _.extend.closest = function (selector) {
     return mutated(this, []);
 };
 
-_.extend.parent = function (selector) {
-    return mutated(
-        this,
-        mapAndFilter({stack: this, map: 'parentNode', filter: selector}));
-};
+_.extend.parent = _mapFilterAndMutate('parentNode');
 
 _.extend.children = function (selector) {
     return mutated(
@@ -522,16 +606,9 @@ _.extend.siblings = function (selector) {
             .filter(item => selector ? item.matches(selector) : item));
 };
 
-_.extend.next = function (selector) {
-    return mutated(
-        this,
-        mapAndFilter({stack: this, map: 'nextElementSibling', filter: selector}));
-};
+_.extend.next = _mapFilterAndMutate('nextElementSibling');
 
-_.extend.prev = function (selector) {
-    return mutated(this,
-        mapAndFilter({stack: this, map: 'previousElementSibling', filter: selector}));
-};
+_.extend.prev = _mapFilterAndMutate('previousElementSibling');
 
 _.extend.first = function () {
     return mutated(this, this.el.filter((item, index) => index === 0));
@@ -700,5 +777,5 @@ _.extend.unwrap = function (selector) {
 
     return this;
 };
-_.uxr = { version: '0.6.0' };
+_.uxr = { version: '0.7.0' };
 })();
