@@ -257,19 +257,19 @@ By using `before`, `after`, `prepend` and `append` you can control where to inse
 let el = uxr('.container');
 
 // adds an element before selection
-el.before('<p>This will before "el"</p>');
+el.before('<p>This will be before of "el"</p>');
 el.before(uxr('#new'));
 
 // adds an element after selection
-el.after('<p>This will before "el"</p>');
+el.after('<p>This will be after of "el"</p>');
 el.after(uxr('#new'));
 
 // appends an element add the end of selection's content
-el.append('<p>This will before "el"</p>');
+el.append('<p>This will be at the end of "el"</p>');
 el.append(uxr('#new'));
 
 // appends an element add the beginning of selection's content
-el.prepend('<p>This will before "el"</p>');
+el.prepend('<p>This will be at the beginning of "el"</p>');
 el.prepend(uxr('#new'));
 
 // replaces the element with new one
