@@ -2,14 +2,13 @@
  * build
  **/
 
-const gcc = require('google-closure-compiler-js');
+const ClosureCompiler = require('google-closure-compiler').jsCompiler;
 const {concat, getContent} = require('./concat');
 const {info, performance} = require('./logger');
 
-let flags = {
-    jsCode: [],
-    warningLevel: 'VERBOSE',
-    compilationLevel: 'ADVANCED'
+const flags = {
+    warning_level: 'VERBOSE',
+    compilation_level: 'ADVANCED'
 };
 
 const release = () => {
@@ -18,35 +17,37 @@ const release = () => {
 };
 
 const build = () => {
-    performance('Build');
+    //performance('Build');
     info('Starting to build...');
 
     concat();
 
     info('All source files concatenated and wrapped in IIFE!');
-    performance('Build');
+    //performance('Build');
 };
 
 const minify = () => {
-    performance('Minification');
+    //performance('Minification');
     info('Starting to minify...');
 
     const uxr = getContent('dist/uxr.js');
 
-    flags.jsCode.push({
-        src: uxr,
-        path: 'dist/uxr.js'
-    });
+    const closureCompiler = new ClosureCompiler(flags)
 
-    const out = gcc.compile(flags);
-
-    fs.writeFile('dist/uxr.min.js', out.compiledCode, err => {
-        if (err) {
-            throw err;
+    closureCompiler.run([
+        {
+            src: uxr,
+            path: 'dist/uxr.js'
         }
+    ], (exitCode, stdOut, stdErr) => {
+        fs.writeFile('dist/uxr.min.js', stdOut[0].src, 'UTF8', error => {
+            if (error) {
+                throw error;
+            }
 
-        info('Minification Complete!');
-        performance('Minification');
+            info('Minification Complete!');
+            //performance('Minification');
+        });
     });
 };
 

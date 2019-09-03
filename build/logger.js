@@ -2,7 +2,7 @@
  * logger
  **/
 
-const {performance} = require('perf_hooks');
+const { performance, PerformanceObserver } = require('perf_hooks');
 const colors = {
     black: '\x1b[30m',
     red: '\x1b[31m',
@@ -32,14 +32,18 @@ const perf = name => {
     if (measures.includes(name)) {
         performance.mark(`${name}_end`);
         performance.measure(`${name} start to ${name} end`, name, `${name}_end`);
-        let measure = performance.getEntriesByName(`${name} start to ${name} end`)[0];
-        log(`${name} Done in ${(measure.duration/1000).toFixed(2)}s.`);
+        //let measure = performance.getEntriesByName(`${name} start to ${name} end`)[0];
+        //log(`${name} Done in ${(measure.duration/1000).toFixed(2)}s.`);
 
         clearPerf(name);
     }
 
     else {
         performance.mark(name);
+        const obs = new PerformanceObserver((list, observer) => {
+            console.log(list.getEntries());
+            observer.disconnect();
+        });
         measures.push(name);
     }
 };
